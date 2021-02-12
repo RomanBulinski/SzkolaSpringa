@@ -1,4 +1,4 @@
-package rombuulean.buuleanBook;
+package rombuulean.buuleanBook.catalog.domain;
 
 public class Book {
 
