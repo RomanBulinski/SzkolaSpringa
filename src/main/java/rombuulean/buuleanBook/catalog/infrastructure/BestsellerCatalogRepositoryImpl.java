@@ -1,6 +1,5 @@
 package rombuulean.buuleanBook.catalog.infrastructure;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.catalog.domain.CatalogRepository;

@@ -1,6 +1,5 @@
 package rombuulean.buuleanBook.catalog.infrastructure;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.catalog.domain.CatalogRepository;
@@ -11,7 +10,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-//@Primary
+    /*
+    @Primary wskazuje który Bean ma pierwszenstwo przy wywolaniu,
+    jezeli jest kilka beanów tego samego typu
+    */
 class SchoolCatalogRepositoryImpl implements CatalogRepository {
 
     private final Map<Long, Book> storage = new ConcurrentHashMap<>();
