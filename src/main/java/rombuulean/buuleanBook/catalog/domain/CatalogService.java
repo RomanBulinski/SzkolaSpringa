@@ -1,13 +1,19 @@
 package rombuulean.buuleanBook.catalog.domain;
 
-import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CatalogService {
+
+    public CatalogService( @Qualifier("schoolCatalogRepositoryImpl") CatalogRepository repository) {
+        this.repository = repository;
+    }
 
     private final CatalogRepository repository;
 
