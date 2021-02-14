@@ -1,10 +1,10 @@
 package rombuulean.buuleanBook;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import rombuulean.buuleanBook.catalog.application.CatalogController;
+import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
+import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase.CreateBookCommand;
 import rombuulean.buuleanBook.catalog.domain.Book;
 
 import java.util.List;
@@ -13,16 +13,16 @@ import java.util.List;
 @Component
 public class ApplicationStartup implements CommandLineRunner {
 
-    private final CatalogController catalogController;
+    private final CatalogUseCase catalog;
     private final String title;
     private final Long limit;
     private final String name;
 
-    public ApplicationStartup(CatalogController catalogController,
+    public ApplicationStartup(CatalogUseCase catalog,
                               @Value("${buuleanBook.catalog.query}") String title,
                               @Value("${buuleanBook.catalog.limit:3}") Long limit,
                               @Value("${buuleanBook.catalog.name:Adam}") String name) {
-        this.catalogController = catalogController;
+        this.catalog = catalog;
         this.title = title;
         this.limit = limit;
         this.name = name;
@@ -30,11 +30,20 @@ public class ApplicationStartup implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        List<Book> booksByTitle = catalogController.findByTitle(title);
-        booksByTitle.stream().limit(limit).forEach(System.out::println);
-
-        List<Book> booksByAuthor = catalogController.findByAuthor(name);
-        booksByAuthor.stream().limit(limit).forEach(System.out::println);
-
+        initDate();
+        findByTitle();
     }
+
+    private void initDate() {
+        catalog.addBook( new CreateBookCommand("Via Carpatia", "Ziemowit Szczerek", 1834));
+        catalog.addBook( new CreateBookCommand("Boże igrzysko", "Norman Davis", 1884));
+        catalog.addBook( new CreateBookCommand("Monte Cassino", "Melchior Wańkowicz", 1834));
+        catalog.addBook( new CreateBookCommand("Jadąc do Badadag", "Andrzej Stasiuk", 2000));
+    }
+
+    private void findByTitle() {
+        List<Book> booksByTitle = catalog.findByTitle(title);
+        booksByTitle.stream().limit(limit).forEach(System.out::println);
+    }
+
 }
