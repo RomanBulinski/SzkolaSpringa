@@ -1,5 +1,6 @@
 package rombuulean.buuleanBook.catalog.application.port;
 
+import lombok.Builder;
 import lombok.Value;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import java.util.List;
@@ -29,11 +30,25 @@ public interface CatalogUseCase {
     }
 
     @Value
+    @Builder
     class UpdateBookCommand{
         Long id;
         String title;
         String author;
         Integer year;
+
+        public Book updateFields(Book book){
+            if(title != null){
+                book.setTitle(title);
+            }
+            if(author != null){
+                book.setAuthor(author);
+            }
+            if(year != null){
+                book.setYear(year);
+            }
+            return book;
+        }
     }
 
     @Value

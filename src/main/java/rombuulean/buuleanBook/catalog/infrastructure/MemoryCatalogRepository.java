@@ -24,9 +24,9 @@ class MemoryCatalogRepository implements CatalogRepository {
 
     @Override
     public void save(Book book) {
-        if(book.getId() != null){
+        if (book.getId() != null) {
             storage.put(book.getId(), book);
-        }else{
+        } else {
             long nextId = nextId();
             book.setId(nextId);
             storage.put(nextId, book);
@@ -41,4 +41,11 @@ class MemoryCatalogRepository implements CatalogRepository {
     public Optional<Book> findById(Long id) {
         return Optional.ofNullable(storage.get(id));
     }
+
+    @Override
+    public void removeById(Long id) {
+        storage.remove(id);
+    }
+
+
 }

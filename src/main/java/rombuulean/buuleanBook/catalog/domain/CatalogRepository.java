@@ -11,4 +11,6 @@ public interface CatalogRepository {
 
     Optional<Book> findById(Long id);
 
+    void removeById(Long id);
+
 }

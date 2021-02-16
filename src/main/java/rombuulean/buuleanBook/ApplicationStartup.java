@@ -58,13 +58,21 @@ public class ApplicationStartup implements CommandLineRunner {
         System.out.println("Updating book : ");
         catalog.findOneByTitleAndAuthor("Wiersze", "Wisława")
                 .ifPresent(book -> {
+
+                    UpdateBookCommand command = UpdateBookCommand.builder()
+                            .id(book.getId())
+                            .title("Wiersze wybrane")
+                            .build();
+
+                    /* Old version
                     UpdateBookCommand command = new UpdateBookCommand(
                             book.getId(),
                             "Wiersze wybrane",
                             book.getAuthor(),
-                            book.getYear()
-                            );
-                    catalog.updateBook(command);
+                            book.getYear());
+                            */
+                    UpdateBookResponse response = catalog.updateBook(command);
+                    System.out.println( "Updeting book result : " + response.isSuccess());
                 });
     }
 
