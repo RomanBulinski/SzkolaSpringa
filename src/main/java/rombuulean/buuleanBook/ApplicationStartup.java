@@ -34,6 +34,15 @@ public class ApplicationStartup implements CommandLineRunner {
     @Override
     public void run(String... args) {
         initDate();
+        serachCatalog();
+        placeOrder();
+    }
+
+    private void placeOrder() {
+    }
+
+
+    private void serachCatalog() {
         findByTitle();
         findAndUpdate();
         findByTitle();
