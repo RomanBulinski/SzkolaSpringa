@@ -53,7 +53,6 @@ public class ApplicationStartup implements CommandLineRunner {
     private void placeOrder() {
         Book montecassino = catalog.findOneByTitle("Monte").orElseThrow(()-> new IllegalStateException("Cannot find a book"));
         Book Wiersze = catalog.findOneByTitle("Wiersze").orElseThrow(()-> new IllegalStateException("Cannot find a book"));
-        //create recipient
 
         Recipient recipient = Recipient.builder()
                 .name("Tytus Kowalski")
