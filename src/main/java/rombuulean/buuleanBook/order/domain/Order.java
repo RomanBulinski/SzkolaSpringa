@@ -22,6 +22,4 @@ public class Order {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void setId(long nextId) {
-    }
 }

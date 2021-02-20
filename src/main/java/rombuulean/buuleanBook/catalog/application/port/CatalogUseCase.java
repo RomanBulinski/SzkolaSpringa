@@ -3,16 +3,21 @@ package rombuulean.buuleanBook.catalog.application.port;
 import lombok.Builder;
 import lombok.Value;
 import rombuulean.buuleanBook.catalog.domain.Book;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 public interface CatalogUseCase {
-    List<Book> findByTitle(String title);
-
-    List<Book> findByAuthor(String name);
 
     List<Book> findAll();
+
+    List<Book> findByTitle(String title);
+
+    Optional<Book> findOneByTitle(String title);
+
+    List<Book> findByAuthor(String name);
 
     Optional<Book> findOneByTitleAndAuthor(String title, String author);
 
@@ -27,6 +32,11 @@ public interface CatalogUseCase {
           String title;
           String author;
           Integer year;
+          BigDecimal price;
+
+          public Book toBook(){
+              return new Book(title,author,year,price);
+          }
     }
 
     @Value

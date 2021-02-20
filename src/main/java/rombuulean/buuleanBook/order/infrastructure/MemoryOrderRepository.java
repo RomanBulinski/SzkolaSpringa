@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MemoryOrderRepository implements OrderRepository {
 
     private final Map<Long, Order> storage = new ConcurrentHashMap<>();
-    private final AtomicLong ID_NEXT_VALUE = new AtomicLong(0L);
+    private final AtomicLong ID_NEXT_VALUE = new AtomicLong(1L);
 
     @Override
     public List<Order> findAll() {
@@ -33,6 +33,7 @@ public class MemoryOrderRepository implements OrderRepository {
             order.setCreatedAt(LocalDateTime.now());
             storage.put(nextId, order);
         }
+        return order;
     }
 
     private long nextId() {
