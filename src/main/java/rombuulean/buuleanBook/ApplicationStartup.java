@@ -101,8 +101,8 @@ public class ApplicationStartup implements CommandLineRunner {
 
     private void findAndUpdate() {
         System.out.println("Updating book : ");
-        catalog.findOneByTitleAndAuthor("Wiersze", "Wisława")
-                .ifPresent(book -> {
+        catalog.findByTitleAndAuthor("Wiersze", "Wisława")
+                .forEach(book -> {
 
                     UpdateBookCommand command = UpdateBookCommand.builder()
                             .id(book.getId())

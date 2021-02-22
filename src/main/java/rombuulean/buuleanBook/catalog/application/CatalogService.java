@@ -9,6 +9,7 @@ import rombuulean.buuleanBook.catalog.domain.CatalogRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ class CatalogService implements CatalogUseCase {
     public List<Book> findByTitle(String title) {
         return repository.findAll()
                 .stream()
-                .filter(book -> book.getTitle().startsWith(title))
+                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -53,12 +54,12 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public Optional<Book> findOneByTitleAndAuthor(String title, String author) {
+    public List<Book> findByTitleAndAuthor(String title, String author) {
         return repository.findAll()
                 .stream()
                 .filter(book -> book.getTitle().startsWith(title))
                 .filter(book -> book.getAuthor().startsWith(author))
-                .findFirst();
+                .collect(Collectors.toList());
     }
 
     @Override
