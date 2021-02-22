@@ -1,15 +1,12 @@
 package rombuulean.buuleanBook.catalog.web;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.domain.Book;
-
 import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/catalog")
 @RestController
@@ -19,13 +16,17 @@ public class CatalogController {
     private final CatalogUseCase catalog;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Book> getAll(){
         return catalog.findAll();
     }
 
     @GetMapping("/{id}")
-    public Book getById(@PathVariable Long id){
-        return catalog.findById(id).orElse(null);
+    public ResponseEntity<?> getById(@PathVariable Long id){
+        return catalog
+                .findById(id)
+                .map(ResponseEntity::ok)
+                .orElse( ResponseEntity.notFound().build());
     }
 
 }
