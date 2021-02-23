@@ -23,7 +23,7 @@ public interface CatalogUseCase {
 
     List<Book> findByTitleAndAuthor(String title, String author);
 
-    void addBook(CreateBookCommand command);
+    Book addBook(CreateBookCommand command);
 
     void removeById(Long id);
 
