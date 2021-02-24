@@ -5,7 +5,9 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase.CreateBookCommand;
@@ -17,8 +19,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping("/catalog")
@@ -33,16 +34,15 @@ public class CatalogController {
     public List<Book> getAll(
             @RequestParam Optional<String> title,
             @RequestParam Optional<String> author,
-            @RequestParam(defaultValue = "10") int limit)
-    {
+            @RequestParam(defaultValue = "10") int limit) {
 
-        if(title.isPresent() && author.isPresent()){
-            return catalog.findByTitleAndAuthor( title.get(), author.get() );
-        } else if(title.isPresent()){
-            return catalog.findByTitle( title.get() );
-        }else if(author.isPresent()){
-            return catalog.findByAuthor( author.get() );
-        }else{
+        if (title.isPresent() && author.isPresent()) {
+            return catalog.findByTitleAndAuthor(title.get(), author.get());
+        } else if (title.isPresent()) {
+            return catalog.findByTitle(title.get());
+        } else if (author.isPresent()) {
+            return catalog.findByAuthor(author.get());
+        } else {
             return catalog.findAll().stream().limit(limit).collect(Collectors.toList());
         }
     }
@@ -59,6 +59,11 @@ public class CatalogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
+
+        if(id.equals(42L)){
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "I am a teapot");
+        }
+
         return catalog
                 .findById(id)
                 .map(ResponseEntity::ok)
@@ -67,40 +72,37 @@ public class CatalogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-//    public Book addBook(@RequestBody  RestCreateBookCommand command){
-    public ResponseEntity<Void> addBook(@Valid @RequestBody  RestCreateBookCommand command){
-        Book book =catalog.addBook(command.toCommand());
+    public ResponseEntity<Void> addBook(@Valid @RequestBody RestCreateBookCommand command) {
+        Book book = catalog.addBook(command.toCommand());
         return ResponseEntity.created(createdBookuri(book)).build();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id){
+    public void deleteById(@PathVariable Long id) {
         catalog.removeById(id);
     }
 
     private URI createdBookuri(Book book) {
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/"+ book.getId().toString()).build().toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + book.getId().toString()).build().toUri();
         return uri;
     }
 
     @Data
     private static class RestCreateBookCommand {
-        @NotBlank
+        @NotBlank(message = "Please provide a title")
         private String title;
-        @NotBlank
+        @NotBlank(message = "Please provide an author")
         private String author;
-        @NotNull
+        @NotNull(message = "Please provide a year")
         private Integer year;
-        @NotNull
+        @NotNull(message = "Please provide a price")
         @DecimalMin("0.00")
         private BigDecimal price;
 
-        CreateBookCommand toCommand(){
+        CreateBookCommand toCommand() {
             return new CreateBookCommand(title, author, year, price);
         }
-
     }
-
 
 }
