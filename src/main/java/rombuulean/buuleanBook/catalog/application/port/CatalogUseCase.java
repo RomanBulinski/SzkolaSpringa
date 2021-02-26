@@ -8,6 +8,7 @@ import rombuulean.buuleanBook.catalog.domain.Book;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
 import static java.util.Collections.emptyList;
 
 public interface CatalogUseCase {
@@ -30,39 +31,49 @@ public interface CatalogUseCase {
 
     UpdateBookResponse updateBook(UpdateBookCommand command);
 
-    @Value
-    class CreateBookCommand{
-          String title;
-          String author;
-          Integer year;
-          BigDecimal price;
+    void updateBookCover(UpdateBookCoverCommand command);
 
-          public Book toBook(){
-              return new Book(title,author,year,price);
-          }
+    @Value
+    class UpdateBookCoverCommand {
+        Long id;
+        byte[] file;
+        String contentType;
+        String fileName;
+    }
+
+    @Value
+    class CreateBookCommand {
+        String title;
+        String author;
+        Integer year;
+        BigDecimal price;
+
+        public Book toBook() {
+            return new Book(title, author, year, price);
+        }
     }
 
     @Value
     @Builder
     @AllArgsConstructor
-    class UpdateBookCommand{
+    class UpdateBookCommand {
         Long id;
         String title;
         String author;
         Integer year;
         BigDecimal price;
 
-        public Book updateFields(Book book){
-            if(title != null){
+        public Book updateFields(Book book) {
+            if (title != null) {
                 book.setTitle(title);
             }
-            if(author != null){
+            if (author != null) {
                 book.setAuthor(author);
             }
-            if(year != null){
+            if (year != null) {
                 book.setYear(year);
             }
-            if(price != null){
+            if (price != null) {
                 book.setPrice(price);
             }
             return book;
@@ -70,8 +81,8 @@ public interface CatalogUseCase {
     }
 
     @Value
-    class UpdateBookResponse{
-        public static UpdateBookResponse SUCCESS = new UpdateBookResponse( true, emptyList());
+    class UpdateBookResponse {
+        public static UpdateBookResponse SUCCESS = new UpdateBookResponse(true, emptyList());
         boolean success;
         List<String> errors;
     }
