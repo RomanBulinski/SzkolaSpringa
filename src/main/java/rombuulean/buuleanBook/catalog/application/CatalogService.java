@@ -1,23 +1,26 @@
 package rombuulean.buuleanBook.catalog.application;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.catalog.domain.CatalogRepository;
+import rombuulean.buuleanBook.uploads.application.port.UploadUseCase;
+import rombuulean.buuleanBook.uploads.domain.Upload;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.*;
 
 @Service
 @AllArgsConstructor
 class CatalogService implements CatalogUseCase {
 
     private final CatalogRepository repository;
+    private final UploadUseCase upload;
 
     @Override
     public List<Book> findAll() {
@@ -87,11 +90,14 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public void updateBookCover(UpdateBookCoverCommand command) {
-        int length = command.getFile().length;
-        System.out.println("Received cover command : " + command.getFileName() + " bytes : "+length);
         repository.findById(command.getId())
                 .ifPresent(book -> {
-//                    book.setCoverId();
+                    Upload saveUpload = this.upload.save(new SaveUploadCommand(
+                            command.getFileName(),
+                            command.getFile(),
+                            command.getContentType()));
+                    book.setCoverId(saveUpload.getId());
+                    repository.save(book);
                 });
     }
 }
