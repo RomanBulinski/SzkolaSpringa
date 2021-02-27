@@ -50,7 +50,6 @@ public class UploadsController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
-
     @Value
     @AllArgsConstructor
     static class UploadResponse {

@@ -63,7 +63,7 @@ public class CatalogController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
-        if(id.equals(42L)){
+        if (id.equals(42L)) {
             throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "I am a teapot");
         }
         return catalog
@@ -74,24 +74,30 @@ public class CatalogController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateBook(@PathVariable Long id, @RequestBody RestBookCommand command){
-        UpdateBookResponse  response = catalog.updateBook(command.toUpdateCommand(id));
-        if(!response.isSuccess()){
-            String message = String.join(", ",response.getErrors());
+    public void updateBook(@PathVariable Long id, @RequestBody RestBookCommand command) {
+        UpdateBookResponse response = catalog.updateBook(command.toUpdateCommand(id));
+        if (!response.isSuccess()) {
+            String message = String.join(", ", response.getErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
         }
     }
 
     @PutMapping("/{id}/cover")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void addBookCover(@PathVariable Long id, @RequestParam("file") MultipartFile file ) throws IOException {
+    public void addBookCover(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
         System.out.println("Got files : " + file.getOriginalFilename());
-        catalog.updateBookCover( new UpdateBookCoverCommand(
+        catalog.updateBookCover(new UpdateBookCoverCommand(
                 id,
                 file.getBytes(),
                 file.getContentType(),
                 file.getOriginalFilename()
         ));
+    }
+
+    @DeleteMapping("/{id}/cover")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeBookCover(@PathVariable Long id) {
+        catalog.removeBookCover(id);
     }
 
     @PostMapping
