@@ -1,7 +1,6 @@
 package rombuulean.buuleanBook.order.infrastructure;
 
 import org.springframework.stereotype.Repository;
-import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderRepository;
 

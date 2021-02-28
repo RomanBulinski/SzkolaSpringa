@@ -3,8 +3,6 @@ package rombuulean.buuleanBook.order.application.port;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
-import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;

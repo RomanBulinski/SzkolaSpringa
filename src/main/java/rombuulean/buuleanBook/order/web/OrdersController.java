@@ -7,21 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
-import rombuulean.buuleanBook.catalog.domain.Book;
-import rombuulean.buuleanBook.catalog.web.CatalogController;
 import rombuulean.buuleanBook.order.application.QueryOrderService;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
-
-import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,8 +73,8 @@ public class OrdersController {
 
     @Data
     private static class RestOrderCommand {
-        private OrderStatus status =  OrderStatus.NEW;
-        private List<OrderItem>  items;
+        private OrderStatus status = OrderStatus.NEW;
+        private List<OrderItem> items;
         private Recipient recipient;
         private LocalDateTime createdAt = LocalDateTime.now();
 
