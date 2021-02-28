@@ -88,4 +88,5 @@ public interface CatalogUseCase {
         boolean success;
         List<String> errors;
     }
+
 }

@@ -47,10 +47,11 @@ public class ApplicationStartup implements CommandLineRunner {
     public void run(String... args) {
         initDate();
         serachCatalog();
-        placeOrder();
+        placeOrder1();
+        placeOrder2();
     }
 
-    private void placeOrder() {
+    private void placeOrder1() {
         Book montecassino = catalog.findOneByTitle("Monte").orElseThrow(()-> new IllegalStateException("Cannot find a book"));
         Book Wiersze = catalog.findOneByTitle("Wiersze").orElseThrow(()-> new IllegalStateException("Cannot find a book"));
 
@@ -68,6 +69,34 @@ public class ApplicationStartup implements CommandLineRunner {
                 .recipient(recipient)
                 .item( new OrderItem(montecassino,12 ))
                 .item( new OrderItem(Wiersze,6 ))
+                .build();
+
+        PlaceOrderResponse response = placeOrder.placeOrder(command);
+        System.out.println( "Created ORDER with id: "+ response.getOrderId() );
+        queryOrder.findAll()
+                .forEach( order -> {
+                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAIL: "+order);
+                } );
+    }
+
+    private void placeOrder2() {
+        Book montecassino = catalog.findOneByTitle("Monte").orElseThrow(()-> new IllegalStateException("Cannot find a book"));
+        Book Wiersze = catalog.findOneByTitle("Wiersze").orElseThrow(()-> new IllegalStateException("Cannot find a book"));
+
+        Recipient recipient = Recipient.builder()
+                .name("Adam Nowak")
+                .phone(("222-222-222-22"))
+                .street("Krakowska")
+                .city("Kraków")
+                .zipCode("33-333")
+                .email("adams@com.pl")
+                .build();
+
+        PlaceOrderCommand command = PlaceOrderCommand.
+                builder()
+                .recipient(recipient)
+                .item( new OrderItem(montecassino,2 ))
+                .item( new OrderItem(Wiersze,2 ))
                 .build();
 
         PlaceOrderResponse response = placeOrder.placeOrder(command);
