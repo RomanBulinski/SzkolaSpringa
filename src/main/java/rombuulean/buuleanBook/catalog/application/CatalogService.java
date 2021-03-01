@@ -3,8 +3,8 @@ package rombuulean.buuleanBook.catalog.application;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
+import rombuulean.buuleanBook.catalog.db.BookJpaRepository;
 import rombuulean.buuleanBook.catalog.domain.Book;
-import rombuulean.buuleanBook.catalog.domain.CatalogRepository;
 import rombuulean.buuleanBook.uploads.application.port.UploadUseCase;
 import rombuulean.buuleanBook.uploads.domain.Upload;
 
@@ -19,7 +19,8 @@ import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.*;
 @AllArgsConstructor
 class CatalogService implements CatalogUseCase {
 
-    private final CatalogRepository repository;
+//    private final CatalogRepository repository;
+    private final BookJpaRepository repository;
     private final UploadUseCase upload;
 
     @Override
@@ -85,7 +86,7 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public void removeById(Long id) {
-        repository.removeById(id);
+        repository.deleteById(id);
     }
 
     @Override
