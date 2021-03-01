@@ -7,27 +7,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import rombuulean.buuleanBook.order.application.QueryOrderService;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
+
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static rombuulean.buuleanBook.order.application.port.QueryOrderUseCase.*;
 
 @RestController
 @RequestMapping("/orders")
 @AllArgsConstructor
 public class OrdersController {
 
-    private final QueryOrderService queryOrderService;
+    private final QueryOrderUseCase queryOrderUseCase;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<Order> getAllOrders() {
-        return queryOrderService.findAll();
+        return queryOrderUseCase.findAll();
     }
 
 
@@ -37,7 +39,7 @@ public class OrdersController {
         if (id.equals(42L)) {
             throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "I am a teapot");
         }
-        return queryOrderService
+        return queryOrderUseCase
                 .findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -46,20 +48,20 @@ public class OrdersController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
-        queryOrderService.removeById(id);
+        queryOrderUseCase.removeById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Order> addOrder(@RequestBody OrdersController.RestOrderCommand command) {
-        Order order = queryOrderService.addOrder(command.toCreateCommand());
+    public ResponseEntity<Order> addOrder(@RequestBody RestOrderCommand restOrderCommand) {
+        Order order = queryOrderUseCase.addOrder(restOrderCommand.toCreateCommand());
         return ResponseEntity.created(createdOrderuri(order)).build();
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateBook(@PathVariable Long id, @RequestBody OrdersController.RestOrderCommand command) {
-        QueryOrderUseCase.UpdateOrderResponse response = queryOrderService.updateOrder(command.toUpdateCommand(id));
+    public void updateBook(@PathVariable Long id, @RequestBody RestOrderCommand restOrderCommand) {
+        UpdateOrderResponse response = queryOrderUseCase.updateOrder(restOrderCommand.toUpdateCommand(id));
         if (!response.isSuccess()) {
             String message = String.join(", ", response.getErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
@@ -78,12 +80,12 @@ public class OrdersController {
         private Recipient recipient;
         private LocalDateTime createdAt = LocalDateTime.now();
 
-        QueryOrderUseCase.CreateOrderCommand toCreateCommand() {
-            return new QueryOrderUseCase.CreateOrderCommand(status, items, recipient, createdAt);
+        CreateOrderCommand toCreateCommand() {
+            return new CreateOrderCommand(status, items, recipient, createdAt);
         }
 
-        QueryOrderUseCase.UpdateOrderCommand toUpdateCommand(Long id) {
-            return new QueryOrderUseCase.UpdateOrderCommand(id, status, items, recipient, createdAt);
+        UpdateOrderCommand toUpdateCommand(Long id) {
+            return new UpdateOrderCommand(id, status, items, recipient, createdAt);
         }
 
 

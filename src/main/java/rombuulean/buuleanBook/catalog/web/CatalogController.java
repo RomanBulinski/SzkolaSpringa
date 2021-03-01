@@ -75,8 +75,8 @@ public class CatalogController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateBook(@PathVariable Long id, @RequestBody RestBookCommand command) {
-        UpdateBookResponse response = catalog.updateBook(command.toUpdateCommand(id));
+    public void updateBook(@PathVariable Long id, @RequestBody RestBookCommand restBookCommand) {
+        UpdateBookResponse response = catalog.updateBook(restBookCommand.toUpdateCommand(id));
         if (!response.isSuccess()) {
             String message = String.join(", ", response.getErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
@@ -103,8 +103,8 @@ public class CatalogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> addBook(@Valid @RequestBody RestBookCommand command) {
-        Book book = catalog.addBook(command.toCreateCommand());
+    public ResponseEntity<Void> addBook(@Valid @RequestBody RestBookCommand restBookCommand) {
+        Book book = catalog.addBook(restBookCommand.toCreateCommand());
         return ResponseEntity.created(createdBookuri(book)).build();
     }
 

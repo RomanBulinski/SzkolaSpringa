@@ -18,8 +18,8 @@ public interface QueryOrderUseCase {
     List<Order> findAll();
     Optional<Order> findById(Long id);
     void removeById(Long id);
-    Order addOrder(QueryOrderUseCase.CreateOrderCommand command);
-    QueryOrderUseCase.UpdateOrderResponse updateOrder(QueryOrderUseCase.UpdateOrderCommand command);
+    Order addOrder(CreateOrderCommand createOrderCommand);
+    UpdateOrderResponse updateOrder(UpdateOrderCommand updateOrderCommand);
 
     @Value
     class CreateOrderCommand {
@@ -62,7 +62,7 @@ public interface QueryOrderUseCase {
 
     @Value
     class UpdateOrderResponse{
-        public static QueryOrderUseCase.UpdateOrderResponse SUCCESS = new QueryOrderUseCase.UpdateOrderResponse(true, emptyList());
+        public static UpdateOrderResponse SUCCESS = new UpdateOrderResponse(true, emptyList());
         boolean success;
         List<String> errors;
 
