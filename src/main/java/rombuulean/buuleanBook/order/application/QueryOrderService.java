@@ -2,11 +2,9 @@ package rombuulean.buuleanBook.order.application;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
-import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
+import rombuulean.buuleanBook.order.db.OrderJpaRepository;
 import rombuulean.buuleanBook.order.domain.Order;
-import rombuulean.buuleanBook.order.domain.OrderRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class QueryOrderService implements QueryOrderUseCase {
 
-    private OrderRepository orderRepository;
+    private OrderJpaRepository orderRepository;
 
     @Override
     public List<Order> findAll() {
@@ -30,7 +28,7 @@ public class QueryOrderService implements QueryOrderUseCase {
 
     @Override
     public void removeById(Long id) {
-        orderRepository.removeById(id);
+        orderRepository.deleteById(id);
     }
 
     @Override

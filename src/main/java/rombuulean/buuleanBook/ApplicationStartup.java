@@ -67,15 +67,16 @@ public class ApplicationStartup implements CommandLineRunner {
         PlaceOrderCommand command = PlaceOrderCommand.
                 builder()
                 .recipient(recipient)
-                .item( new OrderItem(montecassino,12 ))
-                .item( new OrderItem(Wiersze,6 ))
+                .item( new OrderItem(montecassino.getId(),12 ))
+                .item( new OrderItem(Wiersze.getId(),6 ))
                 .build();
 
         PlaceOrderResponse response = placeOrder.placeOrder(command);
         System.out.println( "Created ORDER with id: "+ response.getOrderId() );
         queryOrder.findAll()
                 .forEach( order -> {
-                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAIL: "+order);
+                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + " DETAIL: "+order);
+//                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAIL: "+order);
                 } );
     }
 
@@ -95,15 +96,16 @@ public class ApplicationStartup implements CommandLineRunner {
         PlaceOrderCommand command = PlaceOrderCommand.
                 builder()
                 .recipient(recipient)
-                .item( new OrderItem(montecassino,2 ))
-                .item( new OrderItem(Wiersze,2 ))
+                .item( new OrderItem(montecassino.getId(),2 ))
+                .item( new OrderItem(Wiersze.getId(),2 ))
                 .build();
 
         PlaceOrderResponse response = placeOrder.placeOrder(command);
         System.out.println( "Created ORDER with id: "+ response.getOrderId() );
         queryOrder.findAll()
                 .forEach( order -> {
-                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAIL: "+order);
+                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + " DETAIL: "+order);
+//                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAIL: "+order);
                 } );
     }
 

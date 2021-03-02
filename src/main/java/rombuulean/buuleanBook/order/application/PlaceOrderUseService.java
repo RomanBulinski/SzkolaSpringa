@@ -3,13 +3,13 @@ package rombuulean.buuleanBook.order.application;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rombuulean.buuleanBook.order.application.port.PlaceOrderUseCase;
+import rombuulean.buuleanBook.order.db.OrderJpaRepository;
 import rombuulean.buuleanBook.order.domain.Order;
-import rombuulean.buuleanBook.order.domain.OrderRepository;
 
 @Service
 @AllArgsConstructor
 public class PlaceOrderUseService implements PlaceOrderUseCase {
-    private final OrderRepository repository;
+    private final OrderJpaRepository repository;
 
     @Override
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {

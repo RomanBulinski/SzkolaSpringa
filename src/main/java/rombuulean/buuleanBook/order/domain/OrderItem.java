@@ -1,12 +1,24 @@
 package rombuulean.buuleanBook.order.domain;
 
-import lombok.Value;
-import rombuulean.buuleanBook.catalog.domain.Book;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Data
+@Entity
+@NoArgsConstructor
 public class OrderItem {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private Long bookId;
+    private int quantity;
 
-    Book book;
-    int quantity;
-
+    public OrderItem(Long bookId, int quantity) {
+        this.bookId = bookId;
+        this.quantity = quantity;
+    }
 }
