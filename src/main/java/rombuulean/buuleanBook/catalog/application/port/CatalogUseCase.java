@@ -38,9 +38,9 @@ public interface CatalogUseCase {
     @Value
     class UpdateBookCoverCommand {
         Long id;
-        byte[] file;
-        String contentType;
         String fileName;
+        String contentType;
+        byte[] file;
     }
 
     @Value

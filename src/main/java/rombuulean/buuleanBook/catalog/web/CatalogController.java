@@ -89,9 +89,9 @@ public class CatalogController {
         System.out.println("Got files : " + file.getOriginalFilename());
         catalog.updateBookCover(new UpdateBookCoverCommand(
                 id,
-                file.getBytes(),
+                file.getOriginalFilename(),
                 file.getContentType(),
-                file.getOriginalFilename()
+                file.getBytes()
         ));
     }
 
