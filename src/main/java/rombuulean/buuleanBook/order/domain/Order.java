@@ -1,6 +1,9 @@
 package rombuulean.buuleanBook.order.domain;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table( name="orders" )
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue()
@@ -23,7 +27,10 @@ public class Order {
     @JoinColumn(name="order_id")
     private List<OrderItem> items;
     private transient Recipient recipient;
+    @CreatedDate
     private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public Order(OrderStatus status, List<OrderItem> items, Recipient recipient, LocalDateTime createdAt ) {
         this.status = status;
