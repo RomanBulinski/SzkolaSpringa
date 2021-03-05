@@ -17,18 +17,24 @@ import java.util.List;
 @Table( name="orders" )
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
+
     @Id
     @GeneratedValue()
     private Long id;
+
 //    @Builder.Default
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status = OrderStatus.NEW;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="order_id")
     private List<OrderItem> items;
-    private transient Recipient recipient;
+
+    private Recipient recipient;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
