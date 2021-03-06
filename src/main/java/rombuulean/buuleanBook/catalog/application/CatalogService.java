@@ -3,7 +3,9 @@ package rombuulean.buuleanBook.catalog.application;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
+import rombuulean.buuleanBook.catalog.db.AuthorJpaRepository;
 import rombuulean.buuleanBook.catalog.db.BookJpaRepository;
+import rombuulean.buuleanBook.catalog.domain.Author;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.uploads.application.port.UploadUseCase;
 import rombuulean.buuleanBook.uploads.domain.Upload;
@@ -11,6 +13,7 @@ import rombuulean.buuleanBook.uploads.domain.Upload;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.*;
@@ -19,8 +22,9 @@ import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.*;
 @AllArgsConstructor
 class CatalogService implements CatalogUseCase {
 
-//    private final CatalogRepository repository;
+    //    private final CatalogRepository repository;
     private final BookJpaRepository repository;
+    private final AuthorJpaRepository authorJpaRepository;
     private final UploadUseCase upload;
 
     @Override
@@ -67,9 +71,23 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public Book addBook(CreateBookCommand createBookCommand) { Book book = createBookCommand.toBook();
+    public Book addBook(CreateBookCommand createBookCommand) {
+        Book book = toBook(createBookCommand);
         return repository.save(book);
     }
+
+    private Book toBook(CreateBookCommand createBookCommand) {
+        Book book = new Book(createBookCommand.getTitle(), createBookCommand.getYear(), createBookCommand.getPrice());
+        Set<Author> authors = createBookCommand.getAuthors().stream()
+                .map(authorId -> authorJpaRepository
+                        .findById(authorId)
+                        .orElseThrow(() -> new IllegalArgumentException("Unable to find author buy id: " + authorId))
+                ).collect(Collectors.toSet());
+
+        book.setAuthors(authors);
+        return book;
+    }
+
 
     @Override
     public UpdateBookResponse updateBook(UpdateBookCommand command) {
@@ -96,7 +114,7 @@ class CatalogService implements CatalogUseCase {
                             command.getFileName(),
                             command.getContentType(),
                             command.getFile()
-                            ));
+                    ));
                     book.setCoverId(saveUpload.getId());
                     repository.save(book);
                 });
@@ -105,8 +123,8 @@ class CatalogService implements CatalogUseCase {
     @Override
     public void removeBookCover(Long id) {
         repository.findById(id)
-                .ifPresent( book ->{
-                    if( book.getCoverId() != null) {
+                .ifPresent(book -> {
+                    if (book.getCoverId() != null) {
                         upload.removeById(book.getCoverId());
                         book.setCoverId(null);
                         repository.save(book);

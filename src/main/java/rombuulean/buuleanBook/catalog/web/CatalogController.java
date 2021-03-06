@@ -123,8 +123,8 @@ public class CatalogController {
     private static class RestBookCommand {
         @NotBlank(message = "Please provide a title")
         private String title;
-        @NotBlank(message = "Please provide an author")
-        private String author;
+//        @NotBlank(message = "Please provide an author")
+//        private String author;
         @NotNull(message = "Please provide a year")
         private Integer year;
         @NotNull(message = "Please provide a price")
@@ -133,11 +133,11 @@ public class CatalogController {
 
         CreateBookCommand toCreateCommand() {
 //            return new CreateBookCommand(title, author, year, price);
-            return new CreateBookCommand(title, year, price);
+            return new CreateBookCommand(title, Set.of(), year, price);
         }
 
         UpdateBookCommand toUpdateCommand(Long id) {
-            return new UpdateBookCommand(id, title, author, year, price);
+            return new UpdateBookCommand(id, title, Set.of(), year, price);
         }
     }
 

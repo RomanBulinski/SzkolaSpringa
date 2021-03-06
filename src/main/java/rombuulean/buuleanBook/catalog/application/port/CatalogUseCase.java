@@ -8,6 +8,7 @@ import rombuulean.buuleanBook.catalog.domain.Book;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Collections.emptyList;
 
@@ -46,14 +47,10 @@ public interface CatalogUseCase {
     @Value
     class CreateBookCommand {
         String title;
-//        String author;
+        Set<Long> authors;
         Integer year;
         BigDecimal price;
 
-        public Book toBook() {
-//            return new Book(title, author, year, price);
-            return new Book(title, year, price);
-        }
     }
 
     @Value
@@ -62,7 +59,7 @@ public interface CatalogUseCase {
     class UpdateBookCommand {
         Long id;
         String title;
-        String author;
+        Set<Long> authors;
         Integer year;
         BigDecimal price;
 
