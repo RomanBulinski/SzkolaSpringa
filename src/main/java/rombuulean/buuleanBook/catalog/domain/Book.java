@@ -1,5 +1,6 @@
 package rombuulean.buuleanBook.catalog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -11,15 +12,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-@RequiredArgsConstructor
-@ToString(exclude = "authors")
+
 @Getter
 @Setter
+@RequiredArgsConstructor
+@ToString(exclude = "authors")
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,6 +36,7 @@ public class Book {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
+    @JsonIgnoreProperties("books")
     private Set<Author> authors;
 
     public Book(String title, Integer year,BigDecimal price ) {

@@ -1,8 +1,7 @@
 package rombuulean.buuleanBook.catalog.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -10,7 +9,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
@@ -23,6 +23,7 @@ public class Author {
     private String lastName;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "authors")
+    @JsonIgnoreProperties("authors")
     private Set<Book> books;
 
     @CreatedDate

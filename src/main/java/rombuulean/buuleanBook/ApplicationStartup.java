@@ -54,8 +54,8 @@ public class ApplicationStartup implements CommandLineRunner {
         PlaceOrderCommand command = PlaceOrderCommand.
                 builder()
                 .recipient(recipient)
-//                .item( new OrderItem(montecassino.getId(),12 ))
-//                .item( new OrderItem(Wiersze.getId(),6 ))
+                .item( new OrderItem(effectivejava.getId(),12 ))
+                .item( new OrderItem(puzzlers.getId(),6 ))
                 .build();
 
         PlaceOrderResponse response = placeOrder.placeOrder(command);
@@ -83,11 +83,6 @@ public class ApplicationStartup implements CommandLineRunner {
         catalog.addBook(javaPuzzlers);
 
     }
-
-//    private void findByTitle() {
-//        List<Book> booksByTitle = catalog.findByTitle(title);
-//        booksByTitle.stream().limit(limit).forEach(System.out::println);
-//    }
 
     private void findAndUpdate() {
         System.out.println("Updating book : ");
