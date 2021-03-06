@@ -116,13 +116,21 @@ public class ApplicationStartup implements CommandLineRunner {
     }
 
     private void initDate() {
-        catalog.addBook(new CreateBookCommand("Via Carpatia", "Ziemowit Szczerek", 1834, new BigDecimal("19.90")));
-        catalog.addBook(new CreateBookCommand("Boże igrzysko", "Norman Davis", 1884, new BigDecimal("29.90")));
-        catalog.addBook(new CreateBookCommand("Monte Cassino", "Melchior Wańkowicz", 1960, new BigDecimal("9.90")));
-        catalog.addBook(new CreateBookCommand("Na tropach smętka", "Melchior Wańkowicz", 1936, new BigDecimal("1.90")));
-        catalog.addBook(new CreateBookCommand("Jadąc do Badadag", "Andrzej Stasiuk", 2000, new BigDecimal("190.90")));
-        catalog.addBook(new CreateBookCommand("Wiersze", "Juliusz Słowacki", 1850, new BigDecimal("39.00")));
-        catalog.addBook(new CreateBookCommand("Wiersze", "Wisława Szymborska", 2000, new BigDecimal("10.25")));
+//        catalog.addBook(new CreateBookCommand("Via Carpatia", "Ziemowit Szczerek", 1834, new BigDecimal("19.90")));
+//        catalog.addBook(new CreateBookCommand("Boże igrzysko", "Norman Davis", 1884, new BigDecimal("29.90")));
+//        catalog.addBook(new CreateBookCommand("Monte Cassino", "Melchior Wańkowicz", 1960, new BigDecimal("9.90")));
+//        catalog.addBook(new CreateBookCommand("Na tropach smętka", "Melchior Wańkowicz", 1936, new BigDecimal("1.90")));
+//        catalog.addBook(new CreateBookCommand("Jadąc do Badadag", "Andrzej Stasiuk", 2000, new BigDecimal("190.90")));
+//        catalog.addBook(new CreateBookCommand("Wiersze", "Juliusz Słowacki", 1850, new BigDecimal("39.00")));
+//        catalog.addBook(new CreateBookCommand("Wiersze", "Wisława Szymborska", 2000, new BigDecimal("10.25")));
+
+        catalog.addBook(new CreateBookCommand("Via Carpatia",  1834, new BigDecimal("19.90")));
+        catalog.addBook(new CreateBookCommand("Boże igrzysko",  1884, new BigDecimal("29.90")));
+        catalog.addBook(new CreateBookCommand("Monte Cassino",  1960, new BigDecimal("9.90")));
+        catalog.addBook(new CreateBookCommand("Na tropach smętka",  1936, new BigDecimal("1.90")));
+        catalog.addBook(new CreateBookCommand("Jadąc do Badadag",  2000, new BigDecimal("190.90")));
+        catalog.addBook(new CreateBookCommand("Wiersze", 1850, new BigDecimal("39.00")));
+        catalog.addBook(new CreateBookCommand("Wiersze",  2000, new BigDecimal("10.25")));
     }
 
     private void findByTitle() {

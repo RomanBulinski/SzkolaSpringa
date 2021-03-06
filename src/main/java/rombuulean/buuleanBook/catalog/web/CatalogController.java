@@ -132,7 +132,8 @@ public class CatalogController {
         private BigDecimal price;
 
         CreateBookCommand toCreateCommand() {
-            return new CreateBookCommand(title, author, year, price);
+//            return new CreateBookCommand(title, author, year, price);
+            return new CreateBookCommand(title, year, price);
         }
 
         UpdateBookCommand toUpdateCommand(Long id) {

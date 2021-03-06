@@ -46,12 +46,13 @@ public interface CatalogUseCase {
     @Value
     class CreateBookCommand {
         String title;
-        String author;
+//        String author;
         Integer year;
         BigDecimal price;
 
         public Book toBook() {
-            return new Book(title, author, year, price);
+//            return new Book(title, author, year, price);
+            return new Book(title, year, price);
         }
     }
 
@@ -69,9 +70,9 @@ public interface CatalogUseCase {
             if (title != null) {
                 book.setTitle(title);
             }
-            if (author != null) {
-                book.setAuthor(author);
-            }
+//            if (author != null) {
+//                book.setAuthor(author);
+//            }
             if (year != null) {
                 book.setYear(year);
             }

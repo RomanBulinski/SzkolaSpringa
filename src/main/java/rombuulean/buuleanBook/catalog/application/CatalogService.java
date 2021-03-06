@@ -53,7 +53,7 @@ class CatalogService implements CatalogUseCase {
     public List<Book> findByAuthor(String name) {
         return repository.findAll()
                 .stream()
-                .filter(book -> book.getAuthor().contains(name))
+//                .filter(book -> book.getAuthor().contains(name))
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +62,7 @@ class CatalogService implements CatalogUseCase {
         return repository.findAll()
                 .stream()
                 .filter(book -> book.getTitle().startsWith(title))
-                .filter(book -> book.getAuthor().startsWith(author))
+//                .filter(book -> book.getAuthor().startsWith(author))
                 .collect(Collectors.toList());
     }
 
