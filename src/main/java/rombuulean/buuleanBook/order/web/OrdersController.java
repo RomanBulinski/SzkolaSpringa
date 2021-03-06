@@ -87,6 +87,27 @@ public class OrdersController {
         UpdateOrderCommand toUpdateCommand(Long id) {
             return new UpdateOrderCommand(id, status, items, recipient, createdAt);
         }
+    }
+
+    @Data
+    static class RecipientCommand {
+        String name;
+        String phone;
+        String street;
+        String city;
+        String zipCode;
+        String email;
+
+        Recipient toRecipient() {
+            return new Recipient(name, phone, street, city, zipCode, email);
+        }
+
+        @Data
+        static class UpdateStatusCommand {
+            String status;
+        }
 
     }
+
+
 }
