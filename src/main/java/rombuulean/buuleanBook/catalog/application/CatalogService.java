@@ -39,10 +39,12 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public List<Book> findByTitle(String title) {
-        return repository.findAll()
-                .stream()
-                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
-                .collect(Collectors.toList());
+        return repository.findByTitleStartsWithIgnoreCase(title);
+            // earlier version
+//        return repository.findAll()
+//                .stream()
+//                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
+//                .collect(Collectors.toList());
     }
 
     @Override
@@ -55,10 +57,9 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public List<Book> findByAuthor(String name) {
-        return repository.findAll()
-                .stream()
-//                .filter(book -> book.getAuthor().contains(name))
-                .collect(Collectors.toList());
+        return repository
+//                .findByAuthors_firstNameContainsIgnoreCaseOrAuthors_lastNameContainsIgnoreCase(name,name);
+                .findByAuthor(name);
     }
 
     @Override
