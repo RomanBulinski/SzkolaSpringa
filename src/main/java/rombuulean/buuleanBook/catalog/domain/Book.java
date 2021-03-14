@@ -34,7 +34,7 @@ public class Book {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER )
     @JoinTable
     @JsonIgnoreProperties("books")
     private Set<Author> authors;
