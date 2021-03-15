@@ -16,13 +16,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.*;
+import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.SaveUploadCommand;
 
 @Service
 @AllArgsConstructor
 class CatalogService implements CatalogUseCase {
-
-    //    private final CatalogRepository repository;
+    /*
+       private final CatalogRepository repository;
+     */
     private final BookJpaRepository repository;
     private final AuthorJpaRepository authorJpaRepository;
     private final UploadUseCase upload;
@@ -39,12 +40,16 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public List<Book> findByTitle(String title) {
+        return repository.findByTitle(title);
+        /*
+          earlier version 1
         return repository.findByTitleStartsWithIgnoreCase(title);
-            // earlier version
-//        return repository.findAll()
-//                .stream()
-//                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
-//                .collect(Collectors.toList());
+          earlier version 2
+        return repository.findAll()
+                .stream()
+                .filter(book -> book.getTitle().toLowerCase().startsWith(title.toLowerCase()))
+                .collect(Collectors.toList());
+        */
     }
 
     @Override
@@ -57,9 +62,8 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public List<Book> findByAuthor(String name) {
-        return repository
+        return repository.findByAuthor(name);
 //                .findByAuthors_firstNameContainsIgnoreCaseOrAuthors_lastNameContainsIgnoreCase(name,name);
-                .findByAuthor(name);
     }
 
     @Override

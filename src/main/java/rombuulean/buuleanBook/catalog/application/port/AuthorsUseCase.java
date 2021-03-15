@@ -26,6 +26,8 @@ public interface AuthorsUseCase {
 
     Optional<Author> findById(Long id);
 
+    List<Author> findByBookTitle(String bookTitle);
+
     //    void removeById(Long id);
 
     Author addAuthor(CreateAuthorCommand createAuthorCommand);

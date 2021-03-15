@@ -48,6 +48,11 @@ public class AuthorsService implements AuthorsUseCase {
         return authorJpaRepository.findById(id);
     }
 
+    @Override
+    public List<Author> findByBookTitle(String bookTitle) {
+        return authorJpaRepository.findAuthorsByBooksTitle( bookTitle);
+    }
+
 //    @Override
 //    public void removeById(Long id) {
 //        authorJpaRepository.deleteById(id);

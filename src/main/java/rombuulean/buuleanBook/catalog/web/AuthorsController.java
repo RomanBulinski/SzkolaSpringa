@@ -34,7 +34,8 @@ public class AuthorsController {
     @ResponseStatus(HttpStatus.OK)
     public List<Author> findAll(
             @RequestParam Optional<String> firstName,
-            @RequestParam Optional<String> lastName
+            @RequestParam Optional<String> lastName,
+            @RequestParam Optional<String> bookTitle
     ) {
         if (firstName.isPresent() && lastName.isPresent()) {
             return authors.findByFirstAndLastName(firstName.get(), lastName.get());
@@ -42,6 +43,8 @@ public class AuthorsController {
             return authors.findByFirstName(firstName.get());
         } else if (lastName.isPresent()) {
             return authors.findByLastName(lastName.get());
+        } else if (bookTitle.isPresent()) {
+            return authors.findByBookTitle(bookTitle.get());
         } else {
             return authors.findAll();
         }
@@ -100,7 +103,7 @@ public class AuthorsController {
         @NotEmpty
         @NotNull(message = "Please provide a lastName")
         private String lastName;
-
+        @NotEmpty
         private Set<Book> books;
 
         CreateAuthorCommand toCreateCommand() {

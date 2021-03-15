@@ -76,8 +76,8 @@ public class ApplicationStartup implements CommandLineRunner {
         authorJpaRepository.save(joshua);
         authorJpaRepository.save(neal);
 
-        CreateBookCommand  effectiveJava= new CreateBookCommand("Effective Java",  Set.of(joshua.getId(), neal.getId()), 2005, new BigDecimal("59.90"));
-        CreateBookCommand  javaPuzzlers= new CreateBookCommand("Java Puzzlers",  Set.of(joshua.getId()), 2018, new BigDecimal("89.00"));
+        CreateBookCommand  effectiveJava= new CreateBookCommand("Effective Java 3",  Set.of(joshua.getId(), neal.getId()), 2005, new BigDecimal("59.90"));
+        CreateBookCommand  javaPuzzlers= new CreateBookCommand("Java Puzzlers 2",  Set.of(joshua.getId()), 2018, new BigDecimal("89.00"));
 
         catalog.addBook(effectiveJava);
         catalog.addBook(javaPuzzlers);
