@@ -1,32 +1,27 @@
 package rombuulean.buuleanBook.catalog.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import rombuulean.buuleanBook.catalog.application.AuthorsService;
 import rombuulean.buuleanBook.catalog.application.port.AuthorsUseCase;
 import rombuulean.buuleanBook.catalog.application.port.AuthorsUseCase.CreateAuthorCommand;
-import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.domain.Author;
 import rombuulean.buuleanBook.catalog.domain.Book;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static rombuulean.buuleanBook.catalog.application.port.AuthorsUseCase.UpdateAuthorCommand;
+import static rombuulean.buuleanBook.catalog.application.port.AuthorsUseCase.UpdateAuthorResponse;
 
 @RestController
 @AllArgsConstructor
@@ -41,7 +36,7 @@ public class AuthorsController {
             @RequestParam Optional<String> firstName,
             @RequestParam Optional<String> lastName
     ) {
-        if( firstName.isPresent() && lastName.isPresent()){
+        if (firstName.isPresent() && lastName.isPresent()) {
             return authors.findByFirstAndLastName(firstName.get(), lastName.get());
         } else if (firstName.isPresent()) {
             return authors.findByFirstName(firstName.get());
@@ -85,8 +80,19 @@ public class AuthorsController {
         return uri;
     }
 
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateAuthor(@PathVariable Long id, @RequestBody RestAuthorCommand restAuthorCommand) {
+        UpdateAuthorResponse response = authors.updateAuthor(restAuthorCommand.toUpdateAuthorCommand(id));
+        if (!response.isSuccess()) {
+            String message = String.join(", ", response.getErrors());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+        }
+    }
+
     @Data
-    private static class RestAuthorCommand{
+    private static class RestAuthorCommand {
 
         @NotEmpty
         @NotNull(message = "Please provide a firstName")
@@ -95,10 +101,15 @@ public class AuthorsController {
         @NotNull(message = "Please provide a lastName")
         private String lastName;
 
-        CreateAuthorCommand toCreateCommand(){
-            return new CreateAuthorCommand(firstName,lastName );
+        private Set<Book> books;
+
+        CreateAuthorCommand toCreateCommand() {
+            return new CreateAuthorCommand(firstName, lastName);
         }
 
+        UpdateAuthorCommand toUpdateAuthorCommand(Long id) {
+            return new UpdateAuthorCommand(id, firstName, lastName, books);
+        }
 
     }
 
