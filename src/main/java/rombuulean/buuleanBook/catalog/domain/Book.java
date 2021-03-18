@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import rombuulean.buuleanBook.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,11 +21,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 @ToString(exclude = "authors")
 @Entity
+//@EqualsAndHashCode(callSuper = true)
 //@EntityListeners(AuditingEntityListener.class)
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Book extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
+//    private String uuid = UUID.randomUUID().toString();
     private String title;
     private Integer year;
     private BigDecimal price;

@@ -4,23 +4,25 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import rombuulean.buuleanBook.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 //@Builder
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table( name="orders" )
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends BaseEntity {
 
-    @Id
-    @GeneratedValue()
-    private Long id;
+//    @Id
+//    @GeneratedValue()
+//    private Long id;
 
 //    @Builder.Default
     @Enumerated(value = EnumType.STRING)

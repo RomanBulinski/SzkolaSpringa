@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import rombuulean.buuleanBook.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,10 +17,10 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @ToString(exclude = "books")
-public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class Author extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
     private String firstName;
     private String lastName;
 
