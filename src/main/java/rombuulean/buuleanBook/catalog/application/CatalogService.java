@@ -84,8 +84,15 @@ class CatalogService implements CatalogUseCase {
     private Book toBook(CreateBookCommand createBookCommand) {
         Book book = new Book(createBookCommand.getTitle(), createBookCommand.getYear(), createBookCommand.getPrice());
         Set<Author> authors = fetchAuthorsById(createBookCommand.getAuthors());
-        book.setAuthors(authors);
+        updateBooks(book, authors);
         return book;
+    }
+
+    private void updateBooks(Book book, Set<Author> authors) {
+        book.deleteAuthors();
+//        book.setAuthors(authors);
+        authors.forEach( author -> book.addAuthor(author));
+
     }
 
     private Set<Author> fetchAuthorsById(Set<Long> authors) {
@@ -115,7 +122,7 @@ class CatalogService implements CatalogUseCase {
             book.setTitle(updateBookCommand.getTitle());
         }
         if (updateBookCommand.getAuthors() != null && !updateBookCommand.getAuthors().isEmpty()) {
-            book.setAuthors(fetchAuthorsById(updateBookCommand.getAuthors()));
+            updateBooks(book, fetchAuthorsById(updateBookCommand.getAuthors()));
         }
         if (updateBookCommand.getYear() != null) {
             book.setYear(updateBookCommand.getYear());
@@ -156,4 +163,6 @@ class CatalogService implements CatalogUseCase {
                     }
                 });
     }
+
+
 }
