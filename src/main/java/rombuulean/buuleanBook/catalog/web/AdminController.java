@@ -45,9 +45,9 @@ public class AdminController {
                 .email("tytus@com.pl")
                 .build();
 
-        if(true){
-            throw new IllegalStateException("Poison!!!");
-        }
+//        if(true){
+//            throw new IllegalStateException("Poison!!!");
+//        }
 
         PlaceOrderUseCase.PlaceOrderCommand command = PlaceOrderUseCase.PlaceOrderCommand.
                 builder()
