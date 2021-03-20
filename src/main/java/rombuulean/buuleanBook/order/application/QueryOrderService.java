@@ -16,6 +16,7 @@ public class QueryOrderService implements QueryOrderUseCase {
 
     private OrderJpaRepository orderRepository;
 
+    //TODO implemnted List<RichOrder> findAll()
     @Override
     public List<Order> findAll() {
         return orderRepository.findAll();

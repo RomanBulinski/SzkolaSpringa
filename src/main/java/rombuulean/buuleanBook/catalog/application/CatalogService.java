@@ -2,6 +2,7 @@ package rombuulean.buuleanBook.catalog.application;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.db.AuthorJpaRepository;
 import rombuulean.buuleanBook.catalog.db.BookJpaRepository;
@@ -76,6 +77,7 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
+    @Transactional
     public Book addBook(CreateBookCommand createBookCommand) {
         Book book = toBook(createBookCommand);
         return repository.save(book);
@@ -92,7 +94,6 @@ class CatalogService implements CatalogUseCase {
         book.deleteAuthors();
 //        book.setAuthors(authors);
         authors.forEach( author -> book.addAuthor(author));
-
     }
 
     private Set<Author> fetchAuthorsById(Set<Long> authors) {
