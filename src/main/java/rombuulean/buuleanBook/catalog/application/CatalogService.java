@@ -107,12 +107,17 @@ class CatalogService implements CatalogUseCase {
 
 
     @Override
+    @Transactional
     public UpdateBookResponse updateBook(UpdateBookCommand updateBookCommand) {
         return repository
                 .findById(updateBookCommand.getId())
                 .map(book -> {
+                    updateFields(updateBookCommand, book);
+                    /*
+                    Jak dodamu adnotacje transactional to to repository save jest niepotrzebne
                     Book updatedBook = updateFields(updateBookCommand, book);
                     repository.save(updatedBook);
+                    */
                     return UpdateBookResponse.SUCCESS;
                 })
                 .orElseGet(() -> new UpdateBookResponse(false, Arrays.asList("Book not found with id: " + updateBookCommand.getId())));

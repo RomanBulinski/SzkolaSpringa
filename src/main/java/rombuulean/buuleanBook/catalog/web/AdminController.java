@@ -1,39 +1,33 @@
-package rombuulean.buuleanBook;
+package rombuulean.buuleanBook.catalog.web;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
-import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase.CreateBookCommand;
 import rombuulean.buuleanBook.catalog.db.AuthorJpaRepository;
 import rombuulean.buuleanBook.catalog.domain.Author;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.application.port.PlaceOrderUseCase;
-import rombuulean.buuleanBook.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
-import rombuulean.buuleanBook.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.Recipient;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
-import static rombuulean.buuleanBook.catalog.application.port.CatalogUseCase.*;
-
-//@RequiredArgsConstructor
-@Component
+@RestController
+@RequestMapping("/admin")
 @AllArgsConstructor
-public class ApplicationStartup implements CommandLineRunner {
+public class AdminController {
 
     private final CatalogUseCase catalog;
     private final PlaceOrderUseCase placeOrder;
     private final QueryOrderUseCase queryOrder;
     private final AuthorJpaRepository authorJpaRepository;
 
-    @Override
-    public void run(String... args) {
+    @PostMapping("/data")
+//    @Transactional
+    public void initialize(){
         initDate();
         placeOrder();
     }
@@ -51,14 +45,18 @@ public class ApplicationStartup implements CommandLineRunner {
                 .email("tytus@com.pl")
                 .build();
 
-        PlaceOrderCommand command = PlaceOrderCommand.
+        if(true){
+            throw new IllegalStateException("Poison!!!");
+        }
+
+        PlaceOrderUseCase.PlaceOrderCommand command = PlaceOrderUseCase.PlaceOrderCommand.
                 builder()
                 .recipient(recipient)
                 .item( new OrderItem(effectivejava.getId(),12 ))
                 .item( new OrderItem(puzzlers.getId(),6 ))
                 .build();
 
-        PlaceOrderResponse response = placeOrder.placeOrder(command);
+        PlaceOrderUseCase.PlaceOrderResponse response = placeOrder.placeOrder(command);
         System.out.println( "Created ORDER with id: "+ response.getOrderId() );
         queryOrder.findAll()
                 .forEach( order -> {
@@ -76,34 +74,12 @@ public class ApplicationStartup implements CommandLineRunner {
         authorJpaRepository.save(joshua);
         authorJpaRepository.save(neal);
 
-        CreateBookCommand  effectiveJava= new CreateBookCommand("Effective Java 3",  Set.of(joshua.getId(), neal.getId()), 2005, new BigDecimal("59.90"));
-        CreateBookCommand  javaPuzzlers= new CreateBookCommand("Java Puzzlers 2",  Set.of(joshua.getId()), 2018, new BigDecimal("89.00"));
+        CatalogUseCase.CreateBookCommand effectiveJava= new CatalogUseCase.CreateBookCommand("Effective Java 3",  Set.of(joshua.getId(), neal.getId()), 2005, new BigDecimal("59.90"));
+        CatalogUseCase.CreateBookCommand javaPuzzlers= new CatalogUseCase.CreateBookCommand("Java Puzzlers 2",  Set.of(joshua.getId()), 2018, new BigDecimal("89.00"));
 
         catalog.addBook(effectiveJava);
         catalog.addBook(javaPuzzlers);
 
-    }
-
-    private void findAndUpdate() {
-        System.out.println("Updating book : ");
-        catalog.findByTitleAndAuthor("Wiersze", "Wisława")
-                .forEach(book -> {
-
-                    UpdateBookCommand command = UpdateBookCommand.builder()
-                            .id(book.getId())
-                            .title("Wiersze wybrane")
-                            .build();
-
-                    /* Old version
-                    UpdateBookCommand command = new UpdateBookCommand(
-                            book.getId(),
-                            "Wiersze wybrane",
-                            book.getAuthor(),
-                            book.getYear());
-                            */
-                    UpdateBookResponse response = catalog.updateBook(command);
-                    System.out.println( "Updeting book result : " + response.isSuccess());
-                });
     }
 
 }
