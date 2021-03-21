@@ -67,13 +67,21 @@ class CatalogService implements CatalogUseCase {
 //                .findByAuthors_firstNameContainsIgnoreCaseOrAuthors_lastNameContainsIgnoreCase(name,name);
     }
 
+    /*
+    Earlier version of method
     @Override
     public List<Book> findByTitleAndAuthor(String title, String author) {
         return repository.findAll()
                 .stream()
                 .filter(book -> book.getTitle().startsWith(title))
-//                .filter(book -> book.getAuthor().startsWith(author))
+                .filter(book -> book.getAuthor().startsWith(author))
                 .collect(Collectors.toList());
+    }
+    */
+
+    @Override
+    public List<Book> findByTitleAndAuthor(String title, String author) {
+        return repository.findByTitleAndAuthor(title,author);
     }
 
     @Override
@@ -104,7 +112,6 @@ class CatalogService implements CatalogUseCase {
                         .orElseThrow(() -> new IllegalArgumentException("Unable to find author buy id: " + authorId))
                 ).collect(Collectors.toSet());
     }
-
 
     @Override
     @Transactional

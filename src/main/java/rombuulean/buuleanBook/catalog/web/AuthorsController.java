@@ -48,7 +48,6 @@ public class AuthorsController {
         } else {
             return authors.findAll();
         }
-
     }
 
     @GetMapping("/{id}")
