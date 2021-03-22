@@ -176,6 +176,4 @@ class CatalogService implements CatalogUseCase {
                     }
                 });
     }
-
-
 }

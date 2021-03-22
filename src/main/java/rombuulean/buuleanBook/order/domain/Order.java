@@ -26,8 +26,6 @@ public class Order extends BaseEntity {
 //    @Id
 //    @GeneratedValue()
 //    private Long id;
-
-    //    @Builder.Default
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status = OrderStatus.NEW;
 
