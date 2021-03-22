@@ -9,7 +9,7 @@ import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.db.AuthorJpaRepository;
 import rombuulean.buuleanBook.catalog.domain.Author;
 import rombuulean.buuleanBook.catalog.domain.Book;
-import rombuulean.buuleanBook.order.application.port.PlaceOrderUseCase;
+import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.Recipient;
@@ -23,7 +23,7 @@ import java.util.Set;
 public class AdminController {
 
     private final CatalogUseCase catalog;
-    private final PlaceOrderUseCase placeOrder;
+    private final ManipulateOrderUseCase placeOrder;
     private final QueryOrderUseCase queryOrder;
     private final AuthorJpaRepository authorJpaRepository;
 
@@ -47,19 +47,15 @@ public class AdminController {
                 .email("tytus@com.pl")
                 .build();
 
-//        if(true){
-//            throw new IllegalStateException("Poison!!!");
-//        }
-
-        PlaceOrderUseCase.PlaceOrderCommand command = PlaceOrderUseCase.PlaceOrderCommand.
+        ManipulateOrderUseCase.PlaceOrderCommand command = ManipulateOrderUseCase.PlaceOrderCommand.
                 builder()
                 .recipient(recipient)
                 .item(new OrderItem(effectivejava.getId(), 12))
                 .item(new OrderItem(puzzlers.getId(), 6))
                 .build();
 
-        PlaceOrderUseCase.PlaceOrderResponse response = placeOrder.placeOrder(command);
-        System.out.println("Created ORDER with id: " + response.getOrderId());
+        ManipulateOrderUseCase.PlaceOrderResponse response = placeOrder.placeOrder(command);
+        System.out.println("Created ORDER with id: " + response);
         queryOrder.findAll()
                 .forEach(order -> {
                     System.out.println("GOT ORDER WITH TOTAL PRICE: " + " DETAIL: " + order);

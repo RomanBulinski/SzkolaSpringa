@@ -1,9 +1,6 @@
 package rombuulean.buuleanBook.order.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@Builder
+@Builder
 @Getter
 @Setter
 @Entity
@@ -54,10 +51,5 @@ public class Order extends BaseEntity {
         this.items = items;
         this.recipient = recipient;
     }
-
-//    public BigDecimal totalPrice() {
-//        return items.stream().map(item -> item.getBookId().getPrice().multiply(new BigDecimal( item.getQuantity())))
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//    }
 
 }
