@@ -18,6 +18,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {
         Order order = Order
                 .builder()
+                .status(OrderStatus.NEW)
                 .recipient(command.getRecipient())
                 .items(command.getItems())
                 .build();
@@ -34,6 +35,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
     public void updateOrderStatus(Long id, OrderStatus status) {
         repository.findById(id)
                 .ifPresent(order -> {
+                    order.getStatus().updateStatus(status);
                     order.setStatus(status);
                     repository.save(order);
                 });

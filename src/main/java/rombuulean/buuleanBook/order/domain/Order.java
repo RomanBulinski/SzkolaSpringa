@@ -20,9 +20,6 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Order extends BaseEntity {
 
-//    @Id
-//    @GeneratedValue()
-//    private Long id;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status = OrderStatus.NEW;
 
@@ -30,7 +27,6 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "order_id")
     private List<OrderItem> items;
 
-    //    @ManyToOne(cascade = CascadeType.ALL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Recipient recipient;
 
