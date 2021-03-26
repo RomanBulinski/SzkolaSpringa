@@ -1,11 +1,7 @@
 package rombuulean.buuleanBook.order.application.port;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Singular;
-import lombok.Value;
+import lombok.*;
 import rombuulean.buuleanBook.common.Either;
-import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
 
@@ -23,9 +19,16 @@ public interface ManipulateOrderUseCase {
     @AllArgsConstructor
     class PlaceOrderCommand {
         @Singular
-        List<OrderItem> items;
+        List<OrderItemCommand> items;
         Recipient recipient;
     }
+
+    @Value
+    class OrderItemCommand {
+        Long bookId;
+        int quantity;
+    }
+
 
     class PlaceOrderResponse extends Either<String, Long> {
         public PlaceOrderResponse(boolean success, String left, Long right) {

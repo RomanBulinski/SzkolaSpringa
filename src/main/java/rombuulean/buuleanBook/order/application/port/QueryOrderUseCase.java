@@ -11,6 +11,7 @@ import rombuulean.buuleanBook.order.domain.Recipient;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Collections.emptyList;
 
@@ -24,7 +25,7 @@ public interface QueryOrderUseCase {
     @Value
     class CreateOrderCommand {
         OrderStatus status;
-        List<OrderItem> items;
+        Set<OrderItem> items;
         Recipient recipient;
         LocalDateTime createdAt;
 
@@ -39,7 +40,7 @@ public interface QueryOrderUseCase {
     class UpdateOrderCommand{
         Long id;
         OrderStatus status;
-        List<OrderItem> items;
+        Set<OrderItem> items;
         Recipient recipient;
         LocalDateTime createdAt;
 

@@ -1,6 +1,7 @@
 package rombuulean.buuleanBook.order.application;
 
 import lombok.Value;
+import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
@@ -18,4 +19,12 @@ public class RichOrder {
     LocalDateTime createdAt;
 //    OrderPrice orderPrice;
     BigDecimal finalPrice;
+
+    public BigDecimal totalPrice(){
+        return items.stream().map( item -> item.getBook()
+                .getPrice()
+                .multiply( new BigDecimal( item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }

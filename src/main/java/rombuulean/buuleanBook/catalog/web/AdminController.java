@@ -50,8 +50,8 @@ public class AdminController {
         ManipulateOrderUseCase.PlaceOrderCommand command = ManipulateOrderUseCase.PlaceOrderCommand.
                 builder()
                 .recipient(recipient)
-                .item(new OrderItem(effectivejava.getId(), 12))
-                .item(new OrderItem(puzzlers.getId(), 6))
+                .item(new ManipulateOrderUseCase.OrderItemCommand(effectivejava.getId(), 12))
+                .item(new ManipulateOrderUseCase.OrderItemCommand(puzzlers.getId(), 6))
                 .build();
 
         ManipulateOrderUseCase.PlaceOrderResponse response = placeOrder.placeOrder(command);
@@ -72,9 +72,19 @@ public class AdminController {
         authorJpaRepository.save(joshua);
         authorJpaRepository.save(neal);
 
-        CatalogUseCase.CreateBookCommand effectiveJava = new CatalogUseCase.CreateBookCommand("Effective Java 3", Set.of(joshua.getId(), neal.getId()), 2005, new BigDecimal("59.90"));
-        CatalogUseCase.CreateBookCommand javaPuzzlers = new CatalogUseCase.CreateBookCommand("Java Puzzlers 2", Set.of(joshua.getId()), 2018, new BigDecimal("89.00"));
-
+        CatalogUseCase.CreateBookCommand effectiveJava = new CatalogUseCase.CreateBookCommand(
+                "Effective Java 3",
+                Set.of(joshua.getId(),
+                        neal.getId()), 2005,
+                new BigDecimal("59.90"),
+                50L
+        );
+        CatalogUseCase.CreateBookCommand javaPuzzlers = new CatalogUseCase.CreateBookCommand(
+                "Java Puzzlers 2",
+                Set.of(joshua.getId()),
+                2018,
+                new BigDecimal("89.00"),
+                50L);
         catalog.addBook(effectiveJava);
         catalog.addBook(javaPuzzlers);
 

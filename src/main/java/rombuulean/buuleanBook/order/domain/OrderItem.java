@@ -1,11 +1,10 @@
 package rombuulean.buuleanBook.order.domain;
 
 import lombok.*;
+import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.jpa.BaseEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -13,14 +12,9 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem extends BaseEntity {
-//    @Id
-//    @GeneratedValue
-//    private Long id;
-    private Long bookId;
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
     private int quantity;
 
-//    public OrderItem(Long bookId, int quantity) {
-//        this.bookId = bookId;
-//        this.quantity = quantity;
-//    }
 }
