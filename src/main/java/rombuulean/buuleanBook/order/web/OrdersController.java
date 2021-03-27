@@ -5,18 +5,14 @@ import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import rombuulean.buuleanBook.order.application.RichOrder;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.Order;
-import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
-import rombuulean.buuleanBook.order.domain.Recipient;
 import rombuulean.buuleanBook.web.CreatedURI;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -73,6 +69,5 @@ class OrdersController {
     static class UpdateStatusCommand {
         String status;
     }
-
 
 }
