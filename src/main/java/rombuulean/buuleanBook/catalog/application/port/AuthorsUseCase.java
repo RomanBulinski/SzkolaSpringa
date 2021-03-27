@@ -18,24 +18,17 @@ public interface AuthorsUseCase {
 
     List<Author> findAll();
 
-    List<Author> findByFirstName(String firstName);
-
-    List<Author> findByLastName(String lastName);
-
-    List<Author> findByFirstAndLastName(String firstName, String lastName);
+    List<Author> findByName(String name);
 
     Optional<Author> findById(Long id);
 
     List<Author> findByBookTitle(String bookTitle);
 
-    //    void removeById(Long id);
-
     Author addAuthor(CreateAuthorCommand createAuthorCommand);
 
     @Value
     class CreateAuthorCommand {
-        String firstName;
-        String lastName;
+        String name;
     }
 
     UpdateAuthorResponse updateAuthor(UpdateAuthorCommand updateAuthorCommand);
@@ -45,8 +38,7 @@ public interface AuthorsUseCase {
     @AllArgsConstructor
     class UpdateAuthorCommand {
         Long id;
-        String firstName;
-        String lastName;
+        String name;
         Set<Book> books;
     }
 

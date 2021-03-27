@@ -29,18 +29,8 @@ public class AuthorsService implements AuthorsUseCase {
     }
 
     @Override
-    public List<Author> findByFirstName(String firstName) {
-        return authorJpaRepository.findByFirstName(firstName);
-    }
-
-    @Override
-    public List<Author> findByLastName(String lastName) {
-        return authorJpaRepository.findByLastName(lastName);
-    }
-
-    @Override
-    public List<Author> findByFirstAndLastName(String firstName, String lastName) {
-        return authorJpaRepository.findAuthorsByFirstNameAndLastName(firstName,lastName );
+    public List<Author> findByName(String name) {
+        return authorJpaRepository.findAuthorsByName( name );
     }
 
     @Override
@@ -53,14 +43,9 @@ public class AuthorsService implements AuthorsUseCase {
         return authorJpaRepository.findAuthorsByBooksTitle( bookTitle);
     }
 
-//    @Override
-//    public void removeById(Long id) {
-//        authorJpaRepository.deleteById(id);
-//    }
-
     @Override
     public Author addAuthor(CreateAuthorCommand createAuthorCommand) {
-        Author author = new Author(createAuthorCommand.getFirstName(),  createAuthorCommand.getLastName());
+        Author author = new Author(createAuthorCommand.getName());
         return authorJpaRepository.save(author);
     }
 
@@ -77,11 +62,8 @@ public class AuthorsService implements AuthorsUseCase {
     }
 
     private Author updateFields( UpdateAuthorCommand updateAuthorCommand, Author author) {
-        if (updateAuthorCommand.getFirstName() != null) {
-            author.setFirstName(updateAuthorCommand.getFirstName());
-        }
-        if (updateAuthorCommand.getLastName() != null) {
-            author.setLastName(updateAuthorCommand.getLastName());
+        if (updateAuthorCommand.getName() != null) {
+            author.setName(updateAuthorCommand.getName());
         }
         if (updateAuthorCommand.getBooks() != null && !updateAuthorCommand.getBooks().isEmpty()) {
             author.setBooks(fetchBooksById( updateAuthorCommand.getBooks() ));

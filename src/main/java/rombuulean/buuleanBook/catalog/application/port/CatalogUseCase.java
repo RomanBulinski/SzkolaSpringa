@@ -45,6 +45,7 @@ public interface CatalogUseCase {
     }
 
     @Value
+    @AllArgsConstructor
     class CreateBookCommand {
         String title;
         Set<Long> authors;

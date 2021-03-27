@@ -15,12 +15,11 @@ public interface BookJpaRepository extends JpaRepository<Book, Long> {
     List<Book> findAllEager();
 
     //another version of method
-    List<Book> findByAuthors_firstNameContainsIgnoreCaseOrAuthors_lastNameContainsIgnoreCase(String firstName, String lastName);
+    List<Book> findByAuthors_nameContainsIgnoreCase(String name);
 
     @Query(" SELECT b FROM Book b JOIN b.authors a" +
             " WHERE " +
-            " lower(a.firstName) LIKE  lower(concat('%',:name ,'%'))" +
-            " OR lower(a.lastName) LIKE lower(concat('%',:name ,'%'))")
+            " lower(a.name) LIKE  lower(concat('%',:name ,'%'))")
     List<Book> findByAuthor(@Param("name")String name);
 
     List<Book> findByTitleStartsWithIgnoreCase(String title);
@@ -37,9 +36,8 @@ public interface BookJpaRepository extends JpaRepository<Book, Long> {
             " WHERE " +
             "lower(b.title) LIKE lower (concat('%', : title, '%'))" +
             " AND " +
-            " lower(a.firstName) LIKE lower (concat('%', : author, '%'))" +
-            " OR " +
-            " lower(a.lastName) LIKE lower (concat('%', : author, '%'))")
+            " lower(a.name) LIKE lower (concat('%', : author, '%'))"
+    )
     List<Book> findByTitleAndAuthor(@Param("title")String title,
                                     @Param("author")String author);
 

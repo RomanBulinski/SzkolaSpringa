@@ -7,13 +7,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rombuulean.buuleanBook.catalog.application.port.CatalogInitializerUseCase;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
+import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase.CreateBookCommand;
 import rombuulean.buuleanBook.catalog.db.AuthorJpaRepository;
+import rombuulean.buuleanBook.catalog.domain.Author;
 import rombuulean.buuleanBook.catalog.domain.Book;
+import rombuulean.buuleanBook.jpa.BaseEntity;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.Recipient;
@@ -21,7 +25,10 @@ import rombuulean.buuleanBook.order.domain.Recipient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,30 +48,41 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
     }
 
     private void initDate() {
-        ClassPathResource resource = new ClassPathResource("books.csv");
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ClassPathResource("book.csv").getInputStream()))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ClassPathResource("books.csv").getInputStream()))) {
             CsvToBean<CsvBook> build = new CsvToBeanBuilder<CsvBook>(reader)
                     .withType(CsvBook.class)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
             build.stream().forEach(this::initBook);
-
         } catch (IOException e) {
             throw new IllegalStateException("Failed to parse CSV file", e);
         }
     }
 
     private void initBook(CsvBook csvBook) {
-        //parsw authors
-        CatalogUseCase.CreateBookCommand createBookCommand = new CatalogUseCase.CreateBookCommand(
+
+        Set<Long> authors = Arrays
+                .stream(csvBook.authors.split(","))
+                .filter(StringUtils::isNotBlank)
+                .map(String::trim)
+                .map(this::getOrCreateAuthor)
+                .map(BaseEntity::getId)
+                .collect(Collectors.toSet());
+        CreateBookCommand createBookCommand = new CreateBookCommand(
                 csvBook.title,
-                Set.of(),
-                csvBook.year,
-                csvBook.amount,
+                authors,
+                Integer.parseInt(csvBook.year),
+                new BigDecimal(csvBook.amount),
                 50L
         );
         catalog.addBook(createBookCommand);
         //upload thumbnail
+    }
+
+    private Author getOrCreateAuthor(String name){
+        return authorJpaRepository.findByNameIgnoreCase(name).orElseGet(
+                ()->authorJpaRepository.save(new Author(name))
+        );
     }
 
     @Data

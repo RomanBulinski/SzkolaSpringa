@@ -33,16 +33,11 @@ public class AuthorsController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Author> findAll(
-            @RequestParam Optional<String> firstName,
-            @RequestParam Optional<String> lastName,
+            @RequestParam Optional<String> name,
             @RequestParam Optional<String> bookTitle
     ) {
-        if (firstName.isPresent() && lastName.isPresent()) {
-            return authors.findByFirstAndLastName(firstName.get(), lastName.get());
-        } else if (firstName.isPresent()) {
-            return authors.findByFirstName(firstName.get());
-        } else if (lastName.isPresent()) {
-            return authors.findByLastName(lastName.get());
+        if (name.isPresent()) {
+            return authors.findByName(name.get());
         } else if (bookTitle.isPresent()) {
             return authors.findByBookTitle(bookTitle.get());
         } else {
@@ -98,19 +93,16 @@ public class AuthorsController {
 
         @NotEmpty
         @NotNull(message = "Please provide a firstName")
-        private String firstName;
-        @NotEmpty
-        @NotNull(message = "Please provide a lastName")
-        private String lastName;
+        private String name;
         @NotEmpty
         private Set<Book> books;
 
         CreateAuthorCommand toCreateCommand() {
-            return new CreateAuthorCommand(firstName, lastName);
+            return new CreateAuthorCommand(name);
         }
 
         UpdateAuthorCommand toUpdateAuthorCommand(Long id) {
-            return new UpdateAuthorCommand(id, firstName, lastName, books);
+            return new UpdateAuthorCommand(id, name, books);
         }
 
     }
