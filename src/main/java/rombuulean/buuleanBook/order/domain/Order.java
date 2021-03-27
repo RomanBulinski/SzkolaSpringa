@@ -8,7 +8,6 @@ import rombuulean.buuleanBook.jpa.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -44,9 +43,11 @@ public class Order extends BaseEntity {
         this.createdAt = createdAt;
     }
 
-    public Order(Set<OrderItem> items, Recipient recipient) {
-        this.items = items;
-        this.recipient = recipient;
+    public UpdateStatusResult updateStatus(OrderStatus newStatus){
+        UpdateStatusResult result = this.status.updateStatus(newStatus);
+        this.status = result.getNewStatus();
+        return result;
     }
+
 
 }

@@ -9,14 +9,14 @@ public enum OrderStatus {
 
     NEW {
         @Override
-        public OrderStatus updateStatus(OrderStatus status){
+        public UpdateStatusResult updateStatus(OrderStatus status){
              switch (status){
                  case PAID:
-                     return PAID;
+                     return UpdateStatusResult.ok(PAID);
                  case CANCELED:
-                     return CANCELED;
+                     return UpdateStatusResult.revoked(CANCELED);
                  case ABANDONED:
-                     return ABANDONED;
+                     return UpdateStatusResult.revoked(ABANDONED);
                  default:
                     return super.updateStatus(status);
                 }
@@ -24,9 +24,9 @@ public enum OrderStatus {
     },
     PAID {
         @Override
-        public OrderStatus updateStatus(OrderStatus status) {
+        public UpdateStatusResult updateStatus(OrderStatus status) {
             if(status==SHIPPED){
-                return SHIPPED;
+                return UpdateStatusResult.ok(SHIPPED);
             }
             return super.updateStatus(status);
         }
@@ -41,7 +41,7 @@ public enum OrderStatus {
                 .findFirst();
     }
 
-    public OrderStatus updateStatus(OrderStatus status){
+    public UpdateStatusResult updateStatus(OrderStatus status){
         throw new IllegalArgumentException("Unable to mark " + this.name() + " order as " + status.name());
     }
 

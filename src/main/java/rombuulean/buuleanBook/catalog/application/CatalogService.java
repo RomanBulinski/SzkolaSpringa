@@ -100,7 +100,6 @@ class CatalogService implements CatalogUseCase {
 
     private void updateBooks(Book book, Set<Author> authors) {
         book.deleteAuthors();
-//        book.setAuthors(authors);
         authors.forEach( author -> book.addAuthor(author));
     }
 

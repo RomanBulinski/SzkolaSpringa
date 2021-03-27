@@ -8,10 +8,7 @@ import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.db.OrderJpaRepository;
 import rombuulean.buuleanBook.order.db.RecipientJpaRepository;
-import rombuulean.buuleanBook.order.domain.Order;
-import rombuulean.buuleanBook.order.domain.OrderItem;
-import rombuulean.buuleanBook.order.domain.OrderStatus;
-import rombuulean.buuleanBook.order.domain.Recipient;
+import rombuulean.buuleanBook.order.domain.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +34,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
                 .items(items)
                 .build();
         Order save = repository.save(order);
-        bookJpaRepository.saveAll(updateBooks(items));
+        bookJpaRepository.saveAll(reduceBooks(items));
         return PlaceOrderResponse.success(save.getId());
     }
 
@@ -47,7 +44,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
                 .orElse(recipient);
     }
 
-    private Set<Book> updateBooks(Set<OrderItem> items) {
+    private Set<Book> reduceBooks(Set<OrderItem> items) {
         return items.stream().map(item -> {
             Book book = item.getBook();
             book.setAvailable(book.getAvailable() - item.getQuantity());
@@ -62,7 +59,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
         if (book.getAvailable() >= quantity) {
             return new OrderItem(book, command.getQuantity());
         }
-        throw new IllegalArgumentException("Too many copies pof book "
+        throw new IllegalArgumentException("Too many copies of book "
                 + book.getId()
                 + " requested: " + quantity + " of " + book.getAvailable() + " available ");
     }
@@ -76,11 +73,20 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
     public void updateOrderStatus(Long id, OrderStatus status) {
         repository.findById(id)
                 .ifPresent(order -> {
-                    order.getStatus().updateStatus(status);
-                    order.setStatus(status);
+                    UpdateStatusResult result = order.updateStatus(status);
+                    if(result.isRevoked()){
+                        bookJpaRepository.saveAll(revokeBooks(order.getItems()));
+                    }
                     repository.save(order);
                 });
     }
 
+    private Set<Book> revokeBooks(Set<OrderItem> items) {
+        return items.stream().map(item -> {
+            Book book = item.getBook();
+            book.setAvailable(book.getAvailable() + item.getQuantity());
+            return book;
+        }).collect(Collectors.toSet());
+    }
 
 }
