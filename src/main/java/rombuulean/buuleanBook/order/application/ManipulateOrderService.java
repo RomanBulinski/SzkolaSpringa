@@ -7,9 +7,11 @@ import rombuulean.buuleanBook.catalog.db.BookJpaRepository;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.db.OrderJpaRepository;
+import rombuulean.buuleanBook.order.db.RecipientJpaRepository;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
+import rombuulean.buuleanBook.order.domain.Recipient;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 class ManipulateOrderService implements ManipulateOrderUseCase {
     private final OrderJpaRepository repository;
     private final BookJpaRepository bookJpaRepository;
+    private final RecipientJpaRepository recipientJpaRepository;
 
     @Override
     public PlaceOrderResponse placeOrder(PlaceOrderCommand command) {
@@ -30,12 +33,18 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
         Order order = Order
                 .builder()
                 .status(OrderStatus.NEW)
-                .recipient(command.getRecipient())
+                .recipient(getOrCreateRecipient(command.getRecipient()))
                 .items(items)
                 .build();
         Order save = repository.save(order);
         bookJpaRepository.saveAll(updateBooks(items));
         return PlaceOrderResponse.success(save.getId());
+    }
+
+    private Recipient getOrCreateRecipient(Recipient recipient) {
+        return recipientJpaRepository
+                .findByEmailIgnoreCase(recipient.getEmail())
+                .orElse(recipient);
     }
 
     private Set<Book> updateBooks(Set<OrderItem> items) {
