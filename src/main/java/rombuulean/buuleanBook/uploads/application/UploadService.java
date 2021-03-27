@@ -1,6 +1,7 @@
 package rombuulean.buuleanBook.uploads.application;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import rombuulean.buuleanBook.uploads.application.port.UploadUseCase;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UploadService implements UploadUseCase {
@@ -26,7 +28,7 @@ public class UploadService implements UploadUseCase {
                 command.getFile()
         );
         uploadJpaRepository.save( upload );
-        System.out.println("Upload saved : " + upload.getFilename() + " with id: " + upload.getId());
+        log.info("Upload saved : " + upload.getFilename() + " with id: " + upload.getId());
         return upload;
     }
 

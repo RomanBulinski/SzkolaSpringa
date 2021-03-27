@@ -1,6 +1,7 @@
 package rombuulean.buuleanBook.catalog.web;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import rombuulean.buuleanBook.order.domain.Recipient;
 import java.math.BigDecimal;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
@@ -54,16 +56,19 @@ public class AdminController {
                 .item(new ManipulateOrderUseCase.OrderItemCommand(puzzlers.getId(), 6))
                 .build();
 
+
         ManipulateOrderUseCase.PlaceOrderResponse response = placeOrder.placeOrder(command);
-        System.out.println("Created ORDER with id: " + response);
+        String result = response.handle(
+                orderId -> "Created ORDER with id: " + orderId,
+                error -> "Failed to created order: " + error
+        );
+        log.info( result );
+
         queryOrder.findAll()
                 .forEach(order -> {
-                    System.out.println("GOT ORDER WITH TOTAL PRICE: " + " DETAIL: " + order);
-                    //TODO create method order.totalPrice()
-//                    System.out.println( "GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAIL: "+order);
+                    log.info("GOT ORDER WITH TOTAL PRICE: " + " DETAIL: " + order);
                 });
     }
-
 
     private void initDate() {
 
@@ -87,7 +92,6 @@ public class AdminController {
                 50L);
         catalog.addBook(effectiveJava);
         catalog.addBook(javaPuzzlers);
-
     }
 
 }
