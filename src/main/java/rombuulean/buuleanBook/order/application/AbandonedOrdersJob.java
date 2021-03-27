@@ -9,6 +9,7 @@ import rombuulean.buuleanBook.order.db.OrderJpaRepository;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,14 +18,18 @@ import java.util.List;
 public class AbandonedOrdersJob {
     private final OrderJpaRepository repository;
     private final ManipulateOrderUseCase orderUseCase;
+    private final OrdersProperties properties;
 
     @Transactional
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "${app.orders.abandon-crone}")
     public void run(){
-        LocalDateTime timestamp = LocalDateTime.now().minusMinutes(5);
-        List<Order> orders =   repository.findByStatusAndCreatedAtLessThanEqual(OrderStatus.NEW, timestamp);
+
+        Duration paymentPeriod = properties.getPaymentPeriod();
+        LocalDateTime olderThen = LocalDateTime.now().minus(paymentPeriod);
+        List<Order> orders =   repository.findByStatusAndCreatedAtLessThanEqual(OrderStatus.NEW, olderThen);
         System.out.println("Founded orders to be abandoned: " + orders.size());
         orders.forEach( order -> orderUseCase.updateOrderStatus(order.getId(), OrderStatus.ABANDONED));
+
     }
 
 }
