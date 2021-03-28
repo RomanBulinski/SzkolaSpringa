@@ -71,22 +71,4 @@ public interface QueryOrderUseCase {
     }
 
 
-    @Value
-    class RichOrder {
-        Long id;
-        OrderStatus status;
-        Set<OrderItem> items;
-        Recipient recipient;
-        LocalDateTime createdAt;
-        BigDecimal finalPrice;
-
-        public BigDecimal totalPrice() {
-            return items.stream().map(item ->
-                    item.getBook()
-                            .getPrice()
-                            .multiply(new BigDecimal(item.getQuantity())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-        }
-
-    }
 }
