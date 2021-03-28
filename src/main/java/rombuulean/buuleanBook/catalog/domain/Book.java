@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import rombuulean.buuleanBook.jpa.BaseEntity;
 
 import javax.persistence.*;
@@ -35,35 +34,33 @@ public class Book extends BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @ManyToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     @JsonIgnoreProperties("books")
     private Set<Author> authors = new HashSet<>();
 
-    public Book(String title, Integer year,BigDecimal price , Long  available) {
+    public Book(String title, Integer year, BigDecimal price, Long available) {
         this.title = title;
         this.year = year;
         this.price = price;
         this.available = available;
     }
 
-    public void addAuthor(Author author){
+    public void addAuthor(Author author) {
         authors.add(author);
         author.getBooks().add(this);
     }
 
-    public void deleteAuthor(Author author){
+    public void deleteAuthor(Author author) {
         authors.remove(author);
         author.getBooks().remove(this);
     }
 
-    public void deleteAuthors(){
+    public void deleteAuthors() {
         Book sefl = this;
-        authors.forEach(author -> author.getBooks().remove(sefl) );
+        authors.forEach(author -> author.getBooks().remove(sefl));
         authors.clear();
     }
-
-
 
 
 }

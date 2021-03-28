@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import rombuulean.buuleanBook.catalog.application.port.CatalogInitializerUseCase;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase.CreateBookCommand;
@@ -39,6 +42,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
     private final ManipulateOrderUseCase placeOrder;
     private final QueryOrderUseCase queryOrder;
     private final AuthorJpaRepository authorJpaRepository;
+    private final RestTemplate restTemplate;
 
     @Override
     @Transactional
@@ -74,9 +78,16 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
                 Integer.parseInt(csvBook.year),
                 new BigDecimal(csvBook.amount),
                 50L
+
         );
-        catalog.addBook(createBookCommand);
-        //upload thumbnail
+        Book book = catalog.addBook(createBookCommand);
+        catalog.updateBookCover(updateBookCoverCommand(book.getId(), csvBook.thumbnail));
+    }
+
+    private CatalogUseCase.UpdateBookCoverCommand updateBookCoverCommand(Long bookId, String thumbnailUrl) {
+        ResponseEntity<byte[]> response = restTemplate.exchange(thumbnailUrl, HttpMethod.GET, null, byte[].class);
+        String contentType = response.getHeaders().getContentType().toString();
+        return new CatalogUseCase.UpdateBookCoverCommand(bookId, "cover", contentType, response.getBody() );
     }
 
     private Author getOrCreateAuthor(String name){
