@@ -36,6 +36,21 @@ public class CatalogController {
     @ResponseStatus(HttpStatus.OK)
     public List<Book> getAll(
             @RequestParam Optional<String> title,
+            @RequestParam Optional<String> author) {
+
+        if (title.isPresent() && author.isPresent()) {
+            return catalog.findByTitleAndAuthor(title.get(), author.get());
+        } else if (title.isPresent()) {
+            return catalog.findByTitle(title.get());
+        } else if (author.isPresent()) {
+            return catalog.findByAuthor(author.get());
+        } else {
+            return catalog.findAll().stream().collect(Collectors.toList());
+        }
+    }
+
+    public List<Book> getAllWithLimit(
+            @RequestParam Optional<String> title,
             @RequestParam Optional<String> author,
             @RequestParam(defaultValue = "10") int limit) {
 
