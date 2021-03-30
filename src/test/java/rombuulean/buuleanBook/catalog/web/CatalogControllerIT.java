@@ -39,14 +39,14 @@ class CatalogControllerIT {
                 "Effectiv Java",
                 Set.of(bloch.getId()),
                 2007,
-                new BigDecimal("99,89"),
+                new BigDecimal("99.89"),
                 50L
         ));
         catalogUseCase.addBook(new CreateBookCommand(
                 "Java in Practice",
                 Set.of(goetz.getId()),
                 2012,
-                new BigDecimal("199,89"),
+                new BigDecimal("199.89"),
                 50L
         ));
 
