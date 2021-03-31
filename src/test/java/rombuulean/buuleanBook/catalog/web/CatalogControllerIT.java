@@ -34,26 +34,10 @@ class CatalogControllerIT {
     public void getAllBooks() {
 
         //given
-        Author goetz = authorJpaRepository.save(new Author("Brian Goetz"));
-        Author bloch = authorJpaRepository.save(new Author("Joshua Bloch"));
-        catalogUseCase.addBook(new CreateBookCommand(
-                "Effective Java",
-                Set.of(bloch.getId()),
-                2007,
-                new BigDecimal("99.89"),
-                50L
-        ));
-        catalogUseCase.addBook(new CreateBookCommand(
-                "Java in Practice",
-                Set.of(goetz.getId()),
-                2012,
-                new BigDecimal("199.89"),
-                50L
-        ));
-
+        givenEffetctiveJava();
+        givenJavaInPractice();
         //when
         List<Book> all = catalogController.getAll(Optional.empty(), Optional.empty());
-
         //then
         assertEquals(2, all.size());
 
@@ -63,26 +47,10 @@ class CatalogControllerIT {
     public void getAllBooksByAuthor() {
 
         //given
-        Author goetz = authorJpaRepository.save(new Author("Brian Goetz"));
-        Author bloch = authorJpaRepository.save(new Author("Joshua Bloch"));
-        catalogUseCase.addBook(new CreateBookCommand(
-                "Effective Java",
-                Set.of(bloch.getId()),
-                2007,
-                new BigDecimal("99.89"),
-                50L
-        ));
-        catalogUseCase.addBook(new CreateBookCommand(
-                "Java in Practice",
-                Set.of(goetz.getId()),
-                2012,
-                new BigDecimal("199.89"),
-                50L
-        ));
-
+        givenEffetctiveJava();
+        givenJavaInPractice();
         //when
         List<Book> all = catalogController.getAll(Optional.empty(), Optional.of("Bloch"));
-
         //then
         assertEquals(1, all.size());
         assertEquals( "Effective Java",all.get(0).getTitle());
@@ -93,7 +61,27 @@ class CatalogControllerIT {
     public void getAllBooksByTitle() {
 
         //given
+        givenEffetctiveJava();
+        givenJavaInPractice();
+        //when
+        List<Book> all = catalogController.getAll(Optional.of("Effective Java"), Optional.empty());
+        //then
+        assertEquals(1, all.size());
+        assertEquals( "Effective Java",all.get(0).getTitle());
+    }
+
+    private void givenJavaInPractice( ) {
         Author goetz = authorJpaRepository.save(new Author("Brian Goetz"));
+        catalogUseCase.addBook(new CreateBookCommand(
+                "Java in Practice",
+                Set.of(goetz.getId()),
+                2002,
+                new BigDecimal("109.89"),
+                50L
+        ));
+    }
+
+    private void givenEffetctiveJava() {
         Author bloch = authorJpaRepository.save(new Author("Joshua Bloch"));
         catalogUseCase.addBook(new CreateBookCommand(
                 "Effective Java",
@@ -102,20 +90,6 @@ class CatalogControllerIT {
                 new BigDecimal("99.89"),
                 50L
         ));
-        catalogUseCase.addBook(new CreateBookCommand(
-                "Java in Practice",
-                Set.of(goetz.getId()),
-                2012,
-                new BigDecimal("199.89"),
-                50L
-        ));
-
-        //when
-        List<Book> all = catalogController.getAll(Optional.of("Effective Java"), Optional.empty());
-
-        //then
-        assertEquals(1, all.size());
-        assertEquals( "Effective Java",all.get(0).getTitle());
-
     }
+
 }
