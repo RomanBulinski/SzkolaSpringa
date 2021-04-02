@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import rombuulean.buuleanBook.order.application.OrdersProperties;
 
 @EnableScheduling
-@EnableJpaAuditing
 @SpringBootApplication
 @EnableConfigurationProperties(OrdersProperties.class)
 public class BuuleanBookWebBookstoreApplication {
