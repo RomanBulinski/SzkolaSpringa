@@ -21,7 +21,7 @@ import static rombuulean.buuleanBook.uploads.application.port.UploadUseCase.Save
 
 @Service
 @AllArgsConstructor
-class CatalogService implements CatalogUseCase {
+public class CatalogService implements CatalogUseCase {
     /*
        private final CatalogRepository repository;
      */
