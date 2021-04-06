@@ -13,6 +13,8 @@ import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.db.BookJpaRepository;
 import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase.PlaceOrderResponse;
+import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
+import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
 
 import java.math.BigDecimal;
@@ -27,12 +29,14 @@ import static rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCa
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class ManipulateOrderServiceTest {
+class OrderServiceTest {
 
     @Autowired
     BookJpaRepository bookJpaRepository;
     @Autowired
     ManipulateOrderService service;
+    @Autowired
+    QueryOrderUseCase queryOrderService;
     @Autowired
     CatalogUseCase catalogUseCase;
 
@@ -52,9 +56,33 @@ class ManipulateOrderServiceTest {
         PlaceOrderResponse response = service.placeOrder(command);
         //then
         assertTrue(response.isSuccess());
-        assertEquals(40L, catalogUseCase.findById(effectiveJava.getId()).get().getAvailable());
-        assertEquals(35L, catalogUseCase.findById(jcip.getId()).get().getAvailable());
+        assertEquals(40L, availableCopiesOf(effectiveJava));
+        assertEquals(35L, availableCopiesOf(jcip));
     }
+
+    @Test
+    public void userCanRevokeOrder(){
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        Long orderId = placeOrder(effectiveJava.getId(), 15);
+        assertEquals(35L,availableCopiesOf(effectiveJava));
+        //when
+        service.updateOrderStatus(orderId, OrderStatus.CANCELED);
+        //then
+        assertEquals(50L,availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.CANCELED, queryOrderService.findById(orderId).get().getStatus());
+    }
+
+    private Long placeOrder(Long bookId, int copies){
+
+        PlaceOrderCommand command = PlaceOrderCommand
+                .builder()
+                .recipient(recipient())
+                .item(new OrderItemCommand(bookId, copies))
+                .build();
+        return service.placeOrder(command).getRight();
+    }
+
 
     @Test
     public void userCantOrderMoreBooksThanAvailable() {
@@ -87,5 +115,9 @@ class ManipulateOrderServiceTest {
 
     private Recipient recipient() {
         return Recipient.builder().email("jhon@example.org").build();
+    }
+
+    private Long availableCopiesOf(Book book) {
+        return catalogUseCase.findById(book.getId()).get().getAvailable();
     }
 }
