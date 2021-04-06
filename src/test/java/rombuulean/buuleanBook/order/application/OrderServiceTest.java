@@ -1,6 +1,7 @@
 package rombuulean.buuleanBook.order.application;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -73,8 +74,28 @@ class OrderServiceTest {
         assertEquals(OrderStatus.CANCELED, queryOrderService.findById(orderId).get().getStatus());
     }
 
-    private Long placeOrder(Long bookId, int copies){
+    @Disabled("homework")
+    public void userCannotRevokePaidOrder(){
+        // user ni emoze ywcofac juz oplaconego zamowienia
+    }
 
+    @Disabled("homework")
+    public void userCannotRevokeShippedOrder(){
+        // user ni emoze ywcofac juz wyslanego zamowienia
+    }
+
+    @Disabled("homework")
+    public void userCannotOrderNoExistingBooks(){
+        // user ni emoze zamowic nieistniejacej ksiazki
+    }
+
+    @Disabled("homework")
+    public void userCannotOrderNegativNumberOfBooks(){
+        // user nie moze ujemnej liczbu ksiazek
+    }
+
+
+    private Long placeOrder(Long bookId, int copies){
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
                 .recipient(recipient())
@@ -82,7 +103,6 @@ class OrderServiceTest {
                 .build();
         return service.placeOrder(command).getRight();
     }
-
 
     @Test
     public void userCantOrderMoreBooksThanAvailable() {
