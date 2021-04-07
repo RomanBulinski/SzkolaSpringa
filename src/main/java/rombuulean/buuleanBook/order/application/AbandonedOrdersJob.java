@@ -30,7 +30,11 @@ public class AbandonedOrdersJob {
         LocalDateTime olderThen = LocalDateTime.now().minus(paymentPeriod);
         List<Order> orders =   repository.findByStatusAndCreatedAtLessThanEqual(OrderStatus.NEW, olderThen);
         log.info("Founded orders to be abandoned: " + orders.size());
-        orders.forEach( order -> orderUseCase.updateOrderStatus(order.getId(), OrderStatus.ABANDONED));
+        orders.forEach( order -> {
+            //TODO Naprawic w module security
+            ManipulateOrderUseCase.UpdateStatusCommand command = new ManipulateOrderUseCase.UpdateStatusCommand(order.getId(), OrderStatus.NEW,null );
+            orderUseCase.updateOrderStatus(command);
+        });
 
     }
 
