@@ -114,6 +114,39 @@ class OrderServiceTest {
     }
 
     @Test
+    //TODO: poprawic w module security
+    public void adminCannotRevokeOtherUserOrder() {
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        String marek = "marek@exaple.org";
+        Long orderId = placeOrder(effectiveJava.getId(), 15, marek);
+        assertEquals(35L,availableCopiesOf(effectiveJava));
+        //when
+        String admin = "admin@example.org";
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,admin );
+        service.updateOrderStatus(command);
+        //then
+        assertEquals(50L,availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.CANCELED, queryOrderService.findById(orderId).get().getStatus());
+    }
+
+    @Test
+    public void adminCanMarkOrderAsPaid(){
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        String recipient = "marek@example.org";
+        Long orderId = placeOrder(effectiveJava.getId(), 15, recipient);
+        assertEquals(35L,availableCopiesOf(effectiveJava));
+        //when
+        String admin = "admin@example.org";
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID,admin );
+        service.updateOrderStatus(command);
+        //then
+        assertEquals(35L,availableCopiesOf(effectiveJava));
+        assertEquals(OrderStatus.PAID, queryOrderService.findById(orderId).get().getStatus());
+    }
+
+    @Test
     public void userCantOrderMoreBooksThanAvailable() {
 
         //given

@@ -73,7 +73,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
     public UpdateStatusResponse updateOrderStatus(UpdateStatusCommand command) {
         return repository.findById(command.getOrderId())
                 .map(order -> {
-                    if(!command.getEmail().equalsIgnoreCase(order.getRecipient().getEmail())){
+                    if(!hasAccess(command, order)){
                         return UpdateStatusResponse.failure("Unauthorized");
                     }
                     UpdateStatusResult result = order.updateStatus(command.getStatus());
