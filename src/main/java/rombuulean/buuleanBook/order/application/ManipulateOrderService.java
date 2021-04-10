@@ -29,8 +29,8 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
                 .collect(Collectors.toSet());
         Order order = Order
                 .builder()
-                .status(OrderStatus.NEW)
                 .recipient(getOrCreateRecipient(command.getRecipient()))
+                .delivery(command.getDelivery())
                 .items(items)
                 .build();
         Order save = repository.save(order);

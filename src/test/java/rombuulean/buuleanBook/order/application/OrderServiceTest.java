@@ -169,6 +169,50 @@ class OrderServiceTest {
         assertTrue(exception.getMessage().contains("Too many copies of book " + effectiveJava.getId() + " requested: 10 of 5 available"));
     }
 
+    @Test
+    public void shippinCostsAreAddedToTotalOrderPrice() {
+
+        //given
+        Book book = givenBook(50L, "49.90");
+        //when
+        Long orderId = placeOrder(book.getId(), 1);
+        //then
+        assertEquals("59.80", orderOf(orderId).getFinalPrice().toPlainString());
+    }
+
+    @Test
+    public void shippinCostsAreDiscountedOver100zlotys() {
+
+        //given
+
+        //when
+
+        //then
+        assertEquals();
+    }
+
+    @Test
+    public void cheapestBookIsHalfPriceWhenTotalOver200zlotys() {
+
+        //given
+
+        //when
+
+        //then
+        assertEquals();
+    }
+
+    @Test
+    public void cheapestBookIsFreeWhenTotalOver400zlotys() {
+
+        //given
+
+        //when
+
+        //then
+        assertEquals();
+    }
+
     private Long placeOrder(Long bookId, int copies, String recipient){
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
@@ -176,6 +220,14 @@ class OrderServiceTest {
                 .item(new OrderItemCommand(bookId, copies))
                 .build();
         return service.placeOrder(command).getRight();
+    }
+
+    private RichOrder orderOf(Long orderId){
+        return queryOrderService.findById(orderId).get();
+    }
+
+    private Book givenBook(Long available, String price){
+        return  bookJpaRepository.save( new Book("Java Concurrency in Practice", 2006, new BigDecimal( price), available ));
     }
 
     private Long placeOrder(Long bookId, int copies ){

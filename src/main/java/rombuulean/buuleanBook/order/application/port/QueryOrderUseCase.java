@@ -3,6 +3,7 @@ package rombuulean.buuleanBook.order.application.port;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import rombuulean.buuleanBook.order.application.RichOrder;
 import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderItem;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
@@ -17,8 +18,8 @@ import java.util.Set;
 import static java.util.Collections.emptyList;
 
 public interface QueryOrderUseCase {
-    List<Order> findAll();
-    Optional<Order> findById(Long id);
+    List<RichOrder> findAll();
+    Optional<RichOrder> findById(Long id);
     void removeById(Long id);
     Order addOrder(CreateOrderCommand createOrderCommand);
     UpdateOrderResponse updateOrder(UpdateOrderCommand updateOrderCommand);

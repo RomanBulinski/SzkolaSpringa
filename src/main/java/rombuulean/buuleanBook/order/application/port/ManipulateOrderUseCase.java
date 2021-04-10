@@ -2,6 +2,7 @@ package rombuulean.buuleanBook.order.application.port;
 
 import lombok.*;
 import rombuulean.buuleanBook.common.Either;
+import rombuulean.buuleanBook.order.domain.Delivery;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
 
@@ -21,6 +22,7 @@ public interface ManipulateOrderUseCase {
         @Singular
         List<OrderItemCommand> items;
         Recipient recipient;
+        Delivery delivery;
     }
 
     @Value

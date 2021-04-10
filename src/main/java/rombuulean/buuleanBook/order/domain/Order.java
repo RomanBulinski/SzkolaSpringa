@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import rombuulean.buuleanBook.jpa.BaseEntity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 public class Order extends BaseEntity {
 
+    @Builder.Default
     @Enumerated(value = EnumType.STRING)
     private OrderStatus status = OrderStatus.NEW;
 
@@ -29,6 +31,10 @@ public class Order extends BaseEntity {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Recipient recipient;
+
+    @Builder.Default
+    @Enumerated(value = EnumType.STRING)
+    private Delivery delivery = Delivery.COURIER;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -49,5 +55,14 @@ public class Order extends BaseEntity {
         return result;
     }
 
+    public BigDecimal getItemsPrice() {
+        return items.stream()
+                .map(item -> item.getBook().getPrice().multiply(new BigDecimal(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal getDeliveryPrice(){
+        return delivery.getPrice();
+    }
 
 }
