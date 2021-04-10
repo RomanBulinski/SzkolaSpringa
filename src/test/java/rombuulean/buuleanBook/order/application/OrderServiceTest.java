@@ -36,10 +36,13 @@ class OrderServiceTest {
 
     @Autowired
     BookJpaRepository bookJpaRepository;
+
     @Autowired
     ManipulateOrderService service;
+
     @Autowired
     QueryOrderUseCase queryOrderService;
+
     @Autowired
     CatalogUseCase catalogUseCase;
 
