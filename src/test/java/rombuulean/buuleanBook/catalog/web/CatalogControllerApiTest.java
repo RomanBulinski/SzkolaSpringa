@@ -3,6 +3,7 @@ package rombuulean.buuleanBook.catalog.web;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -13,15 +14,15 @@ import org.springframework.http.ResponseEntity;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.domain.Book;
 
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
 public class CatalogControllerApiTest {
 
     @LocalServerPort
@@ -34,13 +35,14 @@ public class CatalogControllerApiTest {
     TestRestTemplate restTemplate;
 
     @Test
-    public void getAllBooks(){
+    public void getAllBooks() {
 
         // give
         Book effective = new Book("Effective Java", 2007, new BigDecimal("99.89"), 50L);
         Book concurency = new Book("Java Concurrency", 2002, new BigDecimal("179.80"), 50L);
-        Mockito.when(catalogUseCase.findAll()).thenReturn( List.of(effective,concurency ));
-        ParameterizedTypeReference<List<Book>> type = new ParameterizedTypeReference<>() {};
+        Mockito.when(catalogUseCase.findAll()).thenReturn(List.of(effective, concurency));
+        ParameterizedTypeReference<List<Book>> type = new ParameterizedTypeReference<>() {
+        };
         // when
 
         String url = "http://localhost:" + port + "/catalog";
