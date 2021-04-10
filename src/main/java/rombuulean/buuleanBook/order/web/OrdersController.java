@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import rombuulean.buuleanBook.order.application.RichOrder;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.Order;
@@ -26,12 +27,12 @@ class OrdersController {
     private final QueryOrderUseCase queryOrder;
 
     @GetMapping
-    public List<Order> getOrders() {
+    public List<RichOrder> getOrders() {
         return queryOrder.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<RichOrder> getOrderById(@PathVariable Long id) {
         return queryOrder.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

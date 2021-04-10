@@ -2,6 +2,7 @@ package rombuulean.buuleanBook.order.application;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.application.price.OrderPrice;
 import rombuulean.buuleanBook.order.application.price.PriceService;
@@ -21,6 +22,7 @@ public class QueryOrderService implements QueryOrderUseCase {
     private final PriceService priceService;
 
     @Override
+    @Transactional
     public List<RichOrder> findAll() {
         return orderRepository.findAll()
                 .stream()
@@ -34,6 +36,7 @@ public class QueryOrderService implements QueryOrderUseCase {
 //    }
 
     @Override
+    @Transactional
     public Optional<RichOrder> findById(Long id) {
         return orderRepository.findById(id).map(this::toRichOrder);
     }

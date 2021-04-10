@@ -17,6 +17,7 @@ import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase.PlaceOrderResponse;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase.UpdateStatusCommand;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
+import rombuulean.buuleanBook.order.domain.Delivery;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
 
@@ -170,47 +171,52 @@ class OrderServiceTest {
     }
 
     @Test
-    public void shippinCostsAreAddedToTotalOrderPrice() {
+    public void shippingCostsAreAddedToTotalOrderPrice() {
 
         //given
         Book book = givenBook(50L, "49.90");
         //when
         Long orderId = placeOrder(book.getId(), 1);
         //then
-        assertEquals("59.80", orderOf(orderId).getFinalPrice().toPlainString());
+        RichOrder order = orderOf(orderId);
+        assertEquals("59.80", order.getFinalPrice().toPlainString());
     }
 
     @Test
     public void shippinCostsAreDiscountedOver100zlotys() {
 
         //given
-
+        Book book = givenBook(50L, "49.90");
         //when
-
+        Long orderId = placeOrder(book.getId(), 3);
         //then
-        assertEquals();
+        RichOrder order = orderOf(orderId);
+        assertEquals("149.70", order.getFinalPrice().toPlainString());
+        assertEquals("149.70", order.getOrderPrice().getItemsPrice().toPlainString());
     }
 
     @Test
     public void cheapestBookIsHalfPriceWhenTotalOver200zlotys() {
 
         //given
-
+        Book book = givenBook(50L, "49.90");
         //when
-
+        Long orderId = placeOrder(book.getId(), 5);
         //then
-        assertEquals();
+        RichOrder order = orderOf(orderId);
+        assertEquals("224.55", order.getFinalPrice().toPlainString());
     }
 
     @Test
     public void cheapestBookIsFreeWhenTotalOver400zlotys() {
 
         //given
-
+        Book book = givenBook(50L, "49.90");
         //when
-
+        Long orderId = placeOrder(book.getId(), 10);
         //then
-        assertEquals();
+        RichOrder order = orderOf(orderId);
+        assertEquals("449.10", order.getFinalPrice().toPlainString());
     }
 
     private Long placeOrder(Long bookId, int copies, String recipient){
@@ -218,6 +224,7 @@ class OrderServiceTest {
                 .builder()
                 .recipient( recipient(recipient) )
                 .item(new OrderItemCommand(bookId, copies))
+                .delivery(Delivery.COURIER)
                 .build();
         return service.placeOrder(command).getRight();
     }
