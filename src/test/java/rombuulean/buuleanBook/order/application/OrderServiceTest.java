@@ -82,24 +82,79 @@ class OrderServiceTest {
         assertEquals(OrderStatus.CANCELED, queryOrderService.findById(orderId).get().getStatus());
     }
 
-    @Disabled("homework")
+//    @Disabled("homework")
+    @Test
     public void userCannotRevokePaidOrder(){
-        // user ni emoze ywcofac juz oplaconego zamowienia
+        // user nie moze ywcofac juz oplaconego zamowienia
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        Long orderId = placeOrder(effectiveJava.getId(), 3,"marek@example.org" );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID,"marek@example.org" );
+        service.updateOrderStatus(command);
+        UpdateStatusCommand canceledCommand = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,"marek@example.org");
+        //when
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.updateOrderStatus(canceledCommand);
+        });
+        //then
+        assertTrue(exception.getMessage().contains("Unable to mark PAID order as CANCELED"));
     }
 
-    @Disabled("homework")
+//    @Disabled("homework")
+    @Test
     public void userCannotRevokeShippedOrder(){
-        // user ni emoze ywcofac juz wyslanego zamowienia
+        // user nie moze wycofac juz wyslanego zamowienia
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        Long orderId = placeOrder(effectiveJava.getId(), 3,"marek@example.org" );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID,"marek@example.org" );
+        service.updateOrderStatus(command);
+        UpdateStatusCommand shippedCommand = new UpdateStatusCommand(orderId, OrderStatus.SHIPPED,"marek@example.org" );
+        service.updateOrderStatus(shippedCommand);
+        UpdateStatusCommand canceledCommand = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,"marek@example.org");
+        //when
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.updateOrderStatus(canceledCommand);
+        });
+        //then
+        assertTrue(exception.getMessage().contains("Unable to mark SHIPPED order as CANCELED"));
     }
 
-    @Disabled("homework")
+    //    @Disabled("homework")
+    @Test
     public void userCannotOrderNoExistingBooks(){
         // user ni emoze zamowic nieistniejacej ksiazki
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        PlaceOrderCommand command = PlaceOrderCommand
+                .builder()
+                .recipient(recipient())
+                .item(new OrderItemCommand(9999L, 1))
+                .build();
+        //when
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.placeOrder(command);
+        });
+        //then
+        assertTrue(exception.getMessage().contains("There is no book with id " + command.getItems().get(0).getBookId() ));
     }
 
-    @Disabled("homework")
+//    @Disabled("homework")
+    @Test
     public void userCannotOrderNegativNumberOfBooks(){
-        // user nie moze ujemnej liczbu ksiazek
+        //given
+        Book effectiveJava = givenJavaConcurrency(50L);
+        PlaceOrderCommand command = PlaceOrderCommand
+                .builder()
+                .recipient(recipient())
+                .item(new OrderItemCommand(effectiveJava.getId(), -1))
+                .build();
+        //when
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.placeOrder(command);
+        });
+        //then
+        assertTrue(exception.getMessage().contains("Attention. Quantity less then 0"));
     }
 
     @Test

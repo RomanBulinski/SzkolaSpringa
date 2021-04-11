@@ -8,8 +8,12 @@ import rombuulean.buuleanBook.catalog.domain.Book;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.db.OrderJpaRepository;
 import rombuulean.buuleanBook.order.db.RecipientJpaRepository;
-import rombuulean.buuleanBook.order.domain.*;
+import rombuulean.buuleanBook.order.domain.Order;
+import rombuulean.buuleanBook.order.domain.OrderItem;
+import rombuulean.buuleanBook.order.domain.Recipient;
+import rombuulean.buuleanBook.order.domain.UpdateStatusResult;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,14 +58,26 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
 
 
     private OrderItem toOrderItem(OrderItemCommand command) {
+        checkIfBookExistInDB(command);
         Book book = bookJpaRepository.getOne(command.getBookId());
         int quantity = command.getQuantity();
+        if (quantity<0) {
+            throw new IllegalArgumentException("Attention. Quantity less then 0");
+        }
         if (book.getAvailable() >= quantity) {
             return new OrderItem(book, command.getQuantity());
+        } else {
+            throw new IllegalArgumentException("Too many copies of book "
+                    + book.getId()
+                    + " requested: " + quantity + " of " + book.getAvailable() + " available ");
         }
-        throw new IllegalArgumentException("Too many copies of book "
-                + book.getId()
-                + " requested: " + quantity + " of " + book.getAvailable() + " available ");
+    }
+
+    private void checkIfBookExistInDB(OrderItemCommand command) {
+        Optional<Book> checkingBook = bookJpaRepository.findById(command.getBookId());
+        if (checkingBook.isEmpty()) {
+            throw new IllegalArgumentException("There is no book with id " + command.getBookId());
+        }
     }
 
     @Override
@@ -73,11 +89,11 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
     public UpdateStatusResponse updateOrderStatus(UpdateStatusCommand command) {
         return repository.findById(command.getOrderId())
                 .map(order -> {
-                    if(!hasAccess(command, order)){
+                    if (!hasAccess(command, order)) {
                         return UpdateStatusResponse.failure("Unauthorized");
                     }
                     UpdateStatusResult result = order.updateStatus(command.getStatus());
-                    if(result.isRevoked()){
+                    if (result.isRevoked()) {
                         bookJpaRepository.saveAll(revokeBooks(order.getItems()));
                     }
                     repository.save(order);
@@ -86,7 +102,7 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
                 .orElse(UpdateStatusResponse.failure("Order not found"));
     }
 
-    private boolean hasAccess( UpdateStatusCommand command, Order order){
+    private boolean hasAccess(UpdateStatusCommand command, Order order) {
         String email = command.getEmail();
         return email.equalsIgnoreCase(order.getRecipient().getEmail()) || email.equalsIgnoreCase("admin@example.org");
     }
