@@ -82,10 +82,9 @@ class OrderServiceTest {
         assertEquals(OrderStatus.CANCELED, queryOrderService.findById(orderId).get().getStatus());
     }
 
-//    @Disabled("homework")
-    @Test
+
+    @Test //    @Disabled("homework")
     public void userCannotRevokePaidOrder(){
-        // user nie moze ywcofac juz oplaconego zamowienia
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
         Long orderId = placeOrder(effectiveJava.getId(), 3,"marek@example.org" );
@@ -100,10 +99,8 @@ class OrderServiceTest {
         assertTrue(exception.getMessage().contains("Unable to mark PAID order as CANCELED"));
     }
 
-//    @Disabled("homework")
-    @Test
+    @Test //    @Disabled("homework")
     public void userCannotRevokeShippedOrder(){
-        // user nie moze wycofac juz wyslanego zamowienia
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
         Long orderId = placeOrder(effectiveJava.getId(), 3,"marek@example.org" );
@@ -120,10 +117,8 @@ class OrderServiceTest {
         assertTrue(exception.getMessage().contains("Unable to mark SHIPPED order as CANCELED"));
     }
 
-    //    @Disabled("homework")
-    @Test
+    @Test     //    @Disabled("homework")
     public void userCannotOrderNoExistingBooks(){
-        // user ni emoze zamowic nieistniejacej ksiazki
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
         PlaceOrderCommand command = PlaceOrderCommand
@@ -139,9 +134,8 @@ class OrderServiceTest {
         assertTrue(exception.getMessage().contains("There is no book with id " + command.getItems().get(0).getBookId() ));
     }
 
-//    @Disabled("homework")
-    @Test
-    public void userCannotOrderNegativNumberOfBooks(){
+    @Test //    @Disabled("homework")
+    public void userCannotOrderNegativeNumberOfBooks(){
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
         PlaceOrderCommand command = PlaceOrderCommand

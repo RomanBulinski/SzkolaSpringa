@@ -58,18 +58,25 @@ class ManipulateOrderService implements ManipulateOrderUseCase {
 
 
     private OrderItem toOrderItem(OrderItemCommand command) {
-        checkIfBookExistInDB(command);
         Book book = bookJpaRepository.getOne(command.getBookId());
         int quantity = command.getQuantity();
-        if (quantity<0) {
-            throw new IllegalArgumentException("Attention. Quantity less then 0");
-        }
-        if (book.getAvailable() >= quantity) {
-            return new OrderItem(book, command.getQuantity());
-        } else {
+        checkIfBookExistInDB(command);
+        checkIfQuantityNoNegative(quantity);
+        checkIfQuantityLessThenAvailable(book,quantity);
+        return new OrderItem(book, command.getQuantity());
+    }
+
+    private void checkIfQuantityLessThenAvailable(Book book,int quantity ) {
+        if (book.getAvailable() < quantity) {
             throw new IllegalArgumentException("Too many copies of book "
                     + book.getId()
                     + " requested: " + quantity + " of " + book.getAvailable() + " available ");
+        }
+    }
+
+    private void checkIfQuantityNoNegative(int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Attention. Quantity less then 0");
         }
     }
 
