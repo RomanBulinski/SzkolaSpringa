@@ -16,14 +16,14 @@ public class BuuleanBookSecurityConfiguration extends WebSecurityConfigurerAdapt
 //        super.configure(http);
         //GET catalog, GET catalog/ID
         http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/catalog/**").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/catalog/**", "/uploads/**", "/authors/**").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/orders").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
                 .csrf().disable();
     }
-
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -35,7 +35,5 @@ public class BuuleanBookSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .withUser("admin")
                 .password("{noop}xxx")
                 .roles("ADMIN");
-
     }
-
 }
