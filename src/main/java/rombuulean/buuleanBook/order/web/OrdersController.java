@@ -1,14 +1,13 @@
 package rombuulean.buuleanBook.order.web;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import rombuulean.buuleanBook.order.application.RichOrder;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
-import rombuulean.buuleanBook.order.domain.Order;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.web.CreatedURI;
 
@@ -17,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
-import static rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase.*;
+import static rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
+import static rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase.UpdateStatusCommand;
 
 @RestController
 @AllArgsConstructor
@@ -27,10 +27,12 @@ class OrdersController {
     private final QueryOrderUseCase queryOrder;
 
     @GetMapping
+    @Secured({"ROLE_ADMIN"})
     public List<RichOrder> getOrders() {
         return queryOrder.findAll();
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/{id}")
     public ResponseEntity<RichOrder> getOrderById(@PathVariable Long id) {
         return queryOrder.findById(id)
@@ -53,6 +55,7 @@ class OrdersController {
         return new CreatedURI("/" + orderId).uri();
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PatchMapping("/{id}/status")
     @ResponseStatus(ACCEPTED)
     public void updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
@@ -61,10 +64,11 @@ class OrdersController {
                 .parseString(status)
                 .orElseThrow(() -> new ResponseStatusException(BAD_REQUEST, "Unknown status: " + status));
         //TODO Naprawic w module security
-        UpdateStatusCommand command = new UpdateStatusCommand(id, orderStatus,"admin@example.org" );
+        UpdateStatusCommand command = new UpdateStatusCommand(id, orderStatus, "admin@example.org");
         manipulateOrder.updateOrderStatus(command);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
     public void deleteOrder(@PathVariable Long id) {
