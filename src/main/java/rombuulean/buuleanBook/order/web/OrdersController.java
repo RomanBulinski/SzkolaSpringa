@@ -3,12 +3,15 @@ package rombuulean.buuleanBook.order.web;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import rombuulean.buuleanBook.order.application.RichOrder;
 import rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCase;
 import rombuulean.buuleanBook.order.application.port.QueryOrderUseCase;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
+import rombuulean.buuleanBook.security.UserSecurity;
 import rombuulean.buuleanBook.web.CreatedURI;
 
 import java.net.URI;
@@ -25,6 +28,7 @@ import static rombuulean.buuleanBook.order.application.port.ManipulateOrderUseCa
 class OrdersController {
     private final ManipulateOrderUseCase manipulateOrder;
     private final QueryOrderUseCase queryOrder;
+    private final UserSecurity userSecurity;
 
     @GetMapping
     @Secured({"ROLE_ADMIN"})
@@ -34,10 +38,17 @@ class OrdersController {
 
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/{id}")
-    public ResponseEntity<RichOrder> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<RichOrder> getOrderById(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return queryOrder.findById(id)
-                .map(ResponseEntity::ok)
+                .map(order -> authorize(order,user))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    private ResponseEntity<RichOrder> authorize(RichOrder order , User user) {
+        if(userSecurity.isOwnerOrAdmin(order.getRecipient().getEmail(), user )){
+            return ResponseEntity.ok(order);
+        }
+        return ResponseEntity.status(FORBIDDEN).build();
     }
 
     @PostMapping
