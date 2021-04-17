@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.DirtiesContext;
 import rombuulean.buuleanBook.catalog.application.CatalogService;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
@@ -22,6 +24,7 @@ import rombuulean.buuleanBook.order.domain.OrderStatus;
 import rombuulean.buuleanBook.order.domain.Recipient;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,7 +78,7 @@ class OrderServiceTest {
         Long orderId = placeOrder(effectiveJava.getId(), 15, recipient);
         assertEquals(35L,availableCopiesOf(effectiveJava));
         //when
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,recipient );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, user(recipient) );
         service.updateOrderStatus(command);
         //then
         assertEquals(50L,availableCopiesOf(effectiveJava));
@@ -88,9 +91,9 @@ class OrderServiceTest {
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
         Long orderId = placeOrder(effectiveJava.getId(), 3,"marek@example.org" );
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID,"marek@example.org" );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID, user("marek@example.org") );
         service.updateOrderStatus(command);
-        UpdateStatusCommand canceledCommand = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,"marek@example.org");
+        UpdateStatusCommand canceledCommand = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,user("marek@example.org"));
         //when
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             service.updateOrderStatus(canceledCommand);
@@ -104,11 +107,11 @@ class OrderServiceTest {
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
         Long orderId = placeOrder(effectiveJava.getId(), 3,"marek@example.org" );
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID,"marek@example.org" );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID, user("marek@example.org") );
         service.updateOrderStatus(command);
-        UpdateStatusCommand shippedCommand = new UpdateStatusCommand(orderId, OrderStatus.SHIPPED,"marek@example.org" );
+        UpdateStatusCommand shippedCommand = new UpdateStatusCommand(orderId, OrderStatus.SHIPPED,user("marek@example.org") );
         service.updateOrderStatus(shippedCommand);
-        UpdateStatusCommand canceledCommand = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,"marek@example.org");
+        UpdateStatusCommand canceledCommand = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,user("marek@example.org"));
         //when
         IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             service.updateOrderStatus(canceledCommand);
@@ -159,7 +162,7 @@ class OrderServiceTest {
         Long orderId = placeOrder(effectiveJava.getId(), 15, adam);
         assertEquals(35L,availableCopiesOf(effectiveJava));
         //when
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,"marek@example.org" );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,user("marek@example.org") );
         service.updateOrderStatus(command);
         //then
         assertEquals(35L,availableCopiesOf(effectiveJava));
@@ -167,7 +170,6 @@ class OrderServiceTest {
     }
 
     @Test
-    //TODO: poprawic w module security
     public void adminCannotRevokeOtherUserOrder() {
         //given
         Book effectiveJava = givenJavaConcurrency(50L);
@@ -175,8 +177,7 @@ class OrderServiceTest {
         Long orderId = placeOrder(effectiveJava.getId(), 15, marek);
         assertEquals(35L,availableCopiesOf(effectiveJava));
         //when
-        String admin = "admin@example.org";
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED,admin );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.CANCELED, adminUser() );
         service.updateOrderStatus(command);
         //then
         assertEquals(50L,availableCopiesOf(effectiveJava));
@@ -191,8 +192,7 @@ class OrderServiceTest {
         Long orderId = placeOrder(effectiveJava.getId(), 15, recipient);
         assertEquals(35L,availableCopiesOf(effectiveJava));
         //when
-        String admin = "admin@example.org";
-        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID,admin );
+        UpdateStatusCommand command = new UpdateStatusCommand(orderId, OrderStatus.PAID, adminUser() );
         service.updateOrderStatus(command);
         //then
         assertEquals(35L,availableCopiesOf(effectiveJava));
@@ -296,6 +296,14 @@ class OrderServiceTest {
 
     private Book givenEffectiveJava(long available) {
         return bookJpaRepository.save(new Book("Effective Java", 2006, new BigDecimal("90.90"), available));
+    }
+
+    private User user(String email) {
+        return new User(email, "", List.of( new SimpleGrantedAuthority("ROLE_USER")));
+    }
+
+    private User adminUser() {
+        return new User("admin", "", List.of( new SimpleGrantedAuthority("ROLE_ADMIN")));
     }
 
     private Recipient recipient() {
