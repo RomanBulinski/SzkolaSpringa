@@ -10,11 +10,15 @@ import rombuulean.buuleanBook.user.db.UserEntityRepository;
 public class BuuleanBookUserDetailsService implements UserDetailsService {
 
     private final UserEntityRepository userEntityRepository;
+    private final AdminConfig adminConfig;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (adminConfig.getUsername().equalsIgnoreCase(username)) {
+            return adminConfig.adminUser();
+        }
         return userEntityRepository.findByUsernameIgnoreCase(username)
-                .map( x -> new UserEntityDetails(x))
-                .orElseThrow(()-> new UsernameNotFoundException(username));
+                .map(x -> new UserEntityDetails(x))
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }
