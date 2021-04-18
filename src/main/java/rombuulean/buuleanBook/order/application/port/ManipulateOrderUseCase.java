@@ -3,6 +3,7 @@ package rombuulean.buuleanBook.order.application.port;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import rombuulean.buuleanBook.common.Either;
 import rombuulean.buuleanBook.order.domain.Delivery;
 import rombuulean.buuleanBook.order.domain.OrderStatus;
@@ -38,7 +39,7 @@ public interface ManipulateOrderUseCase {
     class UpdateStatusCommand{
         Long orderId;
         OrderStatus status;
-        User user;
+        UserDetails user;
     }
 
     class PlaceOrderResponse extends Either<String, Long> {

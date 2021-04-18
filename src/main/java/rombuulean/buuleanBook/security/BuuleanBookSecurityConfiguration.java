@@ -12,14 +12,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import rombuulean.buuleanBook.user.db.UserEntityRepository;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Configuration
@@ -37,13 +34,11 @@ public class BuuleanBookSecurityConfiguration extends WebSecurityConfigurerAdapt
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        super.configure(http);
-        //GET catalog, GET catalog/ID
         http.csrf().disable();
 
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.GET, "/catalog/**", "/uploads/**", "/authors/**").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/orders", "/login").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/orders", "/login", "/users").permitAll()
                 .anyRequest().authenticated()
 //                .and()
 //                .formLogin().permitAll()
@@ -71,7 +66,7 @@ public class BuuleanBookSecurityConfiguration extends WebSecurityConfigurerAdapt
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         BuuleanBookUserDetailsService detailsService = new BuuleanBookUserDetailsService(userEntityRepository, adminConfig);
         provider.setUserDetailsService(detailsService);
-        provider.setPasswordEncoder( passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
