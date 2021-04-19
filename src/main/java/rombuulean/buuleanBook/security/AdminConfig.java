@@ -19,7 +19,7 @@ class AdminConfig {
     User adminUser(){
         return new User(username,
                 password,
-                roles.stream().map(x-> new SimpleGrantedAuthority(x)).collect(Collectors.toList()) );
+                roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()) );
     }
 
 }

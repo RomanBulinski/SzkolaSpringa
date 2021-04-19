@@ -42,13 +42,10 @@ public class BuuleanBookSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .mvcMatchers(HttpMethod.GET, "/catalog/**", "/uploads/**", "/authors/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/orders", "/login", "/users").permitAll()
                 .anyRequest().authenticated()
-//                .and()
-//                .formLogin().permitAll()
                 .and()
                 .httpBasic()
                 .and()
                 .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
     }
 
     @SneakyThrows
@@ -76,6 +73,5 @@ public class BuuleanBookSecurityConfiguration extends WebSecurityConfigurerAdapt
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
 }

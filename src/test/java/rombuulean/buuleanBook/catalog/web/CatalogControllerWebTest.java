@@ -11,11 +11,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import rombuulean.buuleanBook.catalog.application.port.CatalogUseCase;
 import rombuulean.buuleanBook.catalog.domain.Book;
-import rombuulean.buuleanBook.user.db.UserEntityRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,7 +38,7 @@ public class CatalogControllerWebTest {
         // give
         Book effective = new Book("Effective Java", 2007, new BigDecimal("99.89"), 50L);
         Book concurency = new Book("Java Concurrency", 2002, new BigDecimal("179.80"), 50L);
-        Mockito.when(catalog.findAll()).thenReturn( List.of(effective,concurency ));
+        Mockito.when(catalog.findAll()).thenReturn(List.of(effective, concurency));
 
         // expect
         mockMvc.perform(MockMvcRequestBuilders.get("/catalog"))

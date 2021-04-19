@@ -1,13 +1,12 @@
 package rombuulean.buuleanBook.security;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserSecurity {
 
-    public boolean isOwnerOrAdmin(String objectOwner, UserDetails user){
+    public boolean isOwnerOrAdmin(String objectOwner, UserDetails user) {
         return isAdmin(user) || isOwner(objectOwner, user);
     }
 
